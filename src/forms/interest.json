@@ -1,0 +1,127 @@
+{
+  "id": "interest",
+  "version": "1.0.0",
+  "title": "Join the expert panel",
+  "intro": "We are researching how well the techniques available today can substantiate safety and compliance claims about general-purpose AI models, and how much weight expert judgement gives them. We are assembling a panel of 16 experts, 8 technical and 8 legal or governance, for a two-round structured expert judgement exercise (Delphi).\n\nThis form records your interest, expertise and availability. **Filling it in does not commit you to take part.** The full process and time commitment (about 2 hours in total, between 1 and 20 October) are explained in step 3.",
+  "estimatedMinutes": 5,
+  "submitLabel": "Send my responses",
+  "sheet": "Interest",
+  "access": "open",
+  "sections": [
+    {
+      "id": "about",
+      "title": "About you",
+      "fields": [
+        { "id": "full_name", "type": "text", "label": "Full name", "required": true, "maxLength": 120 },
+        { "id": "email", "type": "email", "label": "Email", "help": "We use this to contact you and, if you ask, to send you a copy of your responses.", "required": true },
+        { "id": "role_org", "type": "text", "label": "Current role and organisation", "required": true, "maxLength": 200 },
+        { "id": "expertise_track", "type": "radio", "label": "Which best describes your primary expertise?", "required": true,
+          "options": [
+            { "value": "technical", "label": "Technical", "description": "AI safety, machine learning, evaluation, interpretability, security" },
+            { "value": "governance", "label": "Legal, governance or policy", "description": "AI regulation, compliance, standards, audit" }
+          ] },
+        { "id": "expertise_tags", "type": "checkboxes", "label": "Which of these apply to you?", "help": "Select all that apply.", "required": true, "minItems": 1,
+          "options": [
+            { "value": "published_research", "label": "Published research in one of the four areas in step 2" },
+            { "value": "hands_on", "label": "Hands-on work: evaluation, red-teaming, interpretability or auditing" },
+            { "value": "legal_practice", "label": "Legal or regulatory practice or advice" },
+            { "value": "standards_policy", "label": "Standards, policy or regulator-facing work" },
+            { "value": "other", "label": "Other" }
+          ] },
+        { "id": "expertise_other", "type": "text", "label": "Other (please describe)", "maxLength": 200,
+          "showIf": { "field": "expertise_tags", "includes": "other" } },
+        { "id": "profile_link", "type": "url", "label": "Link to a profile or relevant work (optional)", "help": "Website, Google Scholar, LinkedIn, institutional page." }
+      ]
+    },
+    {
+      "id": "domains",
+      "title": "Your domains",
+      "description": "The study covers four technical problem areas of general-purpose AI models.",
+      "fields": [
+        { "id": "domain_info", "type": "info", "label": "The four domains",
+          "text": "**D1 Model opacity:** inspecting and explaining why a model produced an output (interpretability, explainability).\n\n**D2 Data integrity:** bias in training data, and degradation from training on synthetic model outputs (model collapse).\n\n**D3 Normative competence:** machine ethics, theory of mind, AI personas and companions, sycophancy.\n\n**D4 Adversarial robustness:** jailbreaking, prompt injection, data poisoning, AI security." },
+        { "id": "primary_domain", "type": "radio", "label": "Which one domain are you best placed to assess?", "required": true,
+          "options": [
+            { "value": "D1", "label": "D1 Model opacity" },
+            { "value": "D2", "label": "D2 Data integrity" },
+            { "value": "D3", "label": "D3 Normative competence" },
+            { "value": "D4", "label": "D4 Adversarial robustness" }
+          ] },
+        { "id": "familiarity", "type": "matrix", "label": "How familiar are you with each domain?", "required": true,
+          "rows": [
+            { "id": "D1", "label": "D1 Model opacity" },
+            { "id": "D2", "label": "D2 Data integrity" },
+            { "id": "D3", "label": "D3 Normative competence" },
+            { "id": "D4", "label": "D4 Adversarial robustness" }
+          ],
+          "columns": [
+            { "value": "none", "label": "Not familiar" },
+            { "value": "some", "label": "Some familiarity" },
+            { "value": "good", "label": "Good working knowledge" },
+            { "value": "expert", "label": "Expert" }
+          ] },
+        { "id": "other_domains", "type": "checkboxes", "label": "Any other domain you would be comfortable rating? (optional)",
+          "options": [
+            { "value": "D1", "label": "D1 Model opacity" },
+            { "value": "D2", "label": "D2 Data integrity" },
+            { "value": "D3", "label": "D3 Normative competence" },
+            { "value": "D4", "label": "D4 Adversarial robustness" },
+            { "value": "none", "label": "None", "exclusive": true }
+          ] }
+      ]
+    },
+    {
+      "id": "process",
+      "title": "The process and your availability",
+      "description": "Please read how the study works before you answer.",
+      "fields": [
+        { "id": "process_info", "type": "info", "label": "How the study works", "component": "ProcessOverview" },
+        { "id": "commitment", "type": "radio", "label": "Can you commit to this process and timeline?", "required": true,
+          "options": [
+            { "value": "yes", "label": "Yes, I can take part in all three stages" },
+            { "value": "maybe", "label": "Probably, but I may need a few extra days for one of the rounds" },
+            { "value": "no", "label": "No, I cannot take part at this time" }
+          ] },
+        { "id": "timezone", "type": "text", "label": "Time zone", "help": "We suggested your browser's time zone. Change it if needed, for example Europe/Rome or UTC+2.", "required": true, "maxLength": 80,
+          "default": "@browserTimeZone", "showIf": { "field": "commitment", "notEquals": "no" } },
+        { "id": "availability", "type": "availability", "label": "When are you generally available between 1 and 20 October?", "required": true,
+          "help": "Tick every slot, in your local time, when you could realistically work on a round or take a 15-minute call. We use this to plan the rounds and to schedule your call.",
+          "dates": { "from": "2026-10-01", "to": "2026-10-20" },
+          "slots": [
+            { "value": "M", "label": "Morning", "description": "before 12:00" },
+            { "value": "A", "label": "Afternoon", "description": "12:00-17:00" },
+            { "value": "E", "label": "Evening", "description": "after 17:00" }
+          ],
+          "showIf": { "field": "commitment", "notEquals": "no" } },
+        { "id": "availability_notes", "type": "textarea", "label": "Anything else we should know about your availability? (optional)", "help": "For example travel, conferences, or days you are completely unavailable.", "maxLength": 1000,
+          "showIf": { "field": "commitment", "notEquals": "no" } }
+      ]
+    },
+    {
+      "id": "consent",
+      "title": "Consent, recording and credit",
+      "showIf": { "field": "commitment", "notEquals": "no" },
+      "fields": [
+        { "id": "consents", "type": "consents", "label": "Consent", "required": true,
+          "options": [
+            { "value": "consent_voluntary", "label": "I understand participation is voluntary and that I can withdraw at any time." },
+            { "value": "consent_use", "label": "I agree that my responses may be used for this research and reported only in aggregate or anonymised form." },
+            { "value": "consent_anonymised_sharing", "label": "I understand that my Round 1 and Round 2 responses and reasoning will be shared with other panellists only in anonymised form." },
+            { "value": "consent_recording", "label": "I agree that the 15-minute call will be recorded and transcribed, and that the recording and transcript will be used only for this research." },
+            { "value": "consent_storage", "label": "I agree to my contact details being stored securely for this study. [RETENTION PERIOD]" }
+          ] },
+        { "id": "appendix_consent", "type": "radio", "label": "Appendix profile", "required": true,
+          "help": "With your consent, the paper will include an appendix listing the experts who took part, with a short profile for each (name, role and affiliation, and a line on your area of expertise). Your individual ratings will never be linked to your name. Do you consent to being listed?",
+          "options": [
+            { "value": "yes", "label": "Yes, include my name and short profile" },
+            { "value": "no", "label": "No, keep my participation anonymous" },
+            { "value": "ask_later", "label": "I am not sure yet, please ask me again before submission" }
+          ] },
+        { "id": "appendix_profile_text", "type": "textarea", "label": "How should we describe you? (optional)", "help": "2-3 lines, for example role, organisation and area of expertise. We will send you your final profile text for approval before submission.", "maxLength": 400,
+          "showIf": { "field": "appendix_consent", "equals": "yes" } },
+        { "id": "referral", "type": "text", "label": "Is there a colleague you would recommend for this panel? (optional)", "maxLength": 300 },
+        { "id": "copy_requested", "type": "checkbox", "label": "Send me a copy of my responses by email" }
+      ]
+    }
+  ]
+}
