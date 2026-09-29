@@ -1,39 +1,29 @@
-import type { Field } from "../../lib/formTypes";
+import type { FieldOf } from "../../formEngine/types";
+import { FieldsetField, invalidAttr } from "./FieldShell";
 
-export function ConsentsField({
-  field,
-  value,
-  onChange,
-  error,
-}: {
-  field: Extract<Field, { type: "consents" }>;
+type Props = {
+  field: FieldOf<"consents">;
   value: Record<string, boolean>;
-  onChange: (v: Record<string, boolean>) => void;
+  onChange: (value: Record<string, boolean>) => void;
   error?: string;
-}) {
-  const v = value ?? {};
-  const errorId = error ? `${field.id}-error` : undefined;
+};
 
+/** Every item must be ticked, so the legend carries no required marker. */
+export function ConsentsField({ field, value, onChange, error }: Props) {
   return (
-    <fieldset className="field" id={field.id} aria-describedby={errorId}>
-      <legend>{field.label}</legend>
+    <FieldsetField id={field.id} label={field.label} help={field.help} error={error}>
       {field.options.map((o) => (
         <label className="consent-item" key={o.value}>
           <input
             type="checkbox"
-            checked={!!v[o.value]}
-            onChange={(e) => onChange({ ...v, [o.value]: e.target.checked })}
-            aria-invalid={error ? "true" : undefined}
+            checked={!!value[o.value]}
+            onChange={(e) => onChange({ ...value, [o.value]: e.target.checked })}
+            aria-invalid={invalidAttr(error)}
             required
           />
           <span>{o.label}</span>
         </label>
       ))}
-      {error && (
-        <p className="field__error" id={errorId} role="alert">
-          {error}
-        </p>
-      )}
-    </fieldset>
+    </FieldsetField>
   );
 }

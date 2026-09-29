@@ -1,28 +1,28 @@
-import { FieldWrapper } from "./FieldWrapper";
-import type { Field } from "../../lib/formTypes";
+import type { FieldOf } from "../../formEngine/types";
+import { LabelledField } from "./FieldShell";
 
-export function TextField({
-  field,
-  value,
-  onChange,
-  error,
-}: {
-  field: Extract<Field, { type: "text" | "email" | "url" }>;
+type Props = {
+  field: FieldOf<"text" | "email" | "url">;
   value: string;
-  onChange: (v: string) => void;
+  onChange: (value: string) => void;
   error?: string;
-}) {
+};
+
+export function TextField({ field, value, onChange, error }: Props) {
   return (
-    <FieldWrapper id={field.id} label={field.label} help={field.help} error={error} required={field.required}>
-      <input
-        id={field.id}
-        name={field.id}
-        type={field.type}
-        value={value ?? ""}
-        maxLength={field.maxLength}
-        required={field.required}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </FieldWrapper>
+    <LabelledField id={field.id} label={field.label} help={field.help} error={error} required={field.required}>
+      {(aria) => (
+        <input
+          id={field.id}
+          name={field.id}
+          type={field.type}
+          value={value}
+          maxLength={field.maxLength}
+          required={field.required}
+          onChange={(e) => onChange(e.target.value)}
+          {...aria}
+        />
+      )}
+    </LabelledField>
   );
 }

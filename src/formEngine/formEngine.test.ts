@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { isVisible, validateForm, stripHidden } from "./validate";
-import type { FormDef } from "./formTypes";
+import { validateForm } from "./validate";
+import { isVisible, stripHidden } from "./visibility";
+import { applyDefaults } from "./defaults";
+import type { FormDef } from "./types";
 
 const form: FormDef = {
   id: "test",
@@ -107,5 +109,20 @@ describe("stripHidden", () => {
     const data = { name: "A", email: "a@example.com", track: "b", tags: ["x"], consent: { c1: true, c2: true } };
     const stripped = stripHidden(form, data);
     expect(stripped.consent).toBeUndefined();
+  });
+});
+
+describe("applyDefaults", () => {
+  const tzForm: FormDef = {
+    ...form,
+    sections: [{ id: "s", title: "S", fields: [{ id: "timezone", type: "text", label: "Time zone", default: "@browserTimeZone" }] }],
+  };
+
+  it("fills the browser time zone when the field is empty", () => {
+    expect(typeof applyDefaults(tzForm, {}).timezone).toBe("string");
+  });
+
+  it("keeps an existing value", () => {
+    expect(applyDefaults(tzForm, { timezone: "Europe/Rome" }).timezone).toBe("Europe/Rome");
   });
 });

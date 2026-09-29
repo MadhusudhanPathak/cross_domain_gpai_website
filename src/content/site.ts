@@ -1,4 +1,4 @@
-// All owner-editable placeholders live here. Never hard-code these in components.
+/** Owner-editable study details. Components read these values instead of hard-coding them. */
 
 export const site = {
   studyName: "GPAI Delphi Study",
@@ -16,5 +16,3 @@ export const site = {
     "You have been invited because of your expertise in AI safety, evaluation, interpretability, security, or AI law, governance and compliance.",
   timeCommitment: "About 2 hours in total, all between 1 and 27 October 2026.",
 };
-
-export type Site = typeof site;

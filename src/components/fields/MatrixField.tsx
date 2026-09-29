@@ -1,32 +1,19 @@
-import type { Field } from "../../lib/formTypes";
+import type { FieldOf } from "../../formEngine/types";
+import { FieldsetField, invalidAttr } from "./FieldShell";
 
-export function MatrixField({
-  field,
-  value,
-  onChange,
-  error,
-}: {
-  field: Extract<Field, { type: "matrix" }>;
+type Props = {
+  field: FieldOf<"matrix">;
   value: Record<string, string>;
-  onChange: (v: Record<string, string>) => void;
+  onChange: (value: Record<string, string>) => void;
   error?: string;
-}) {
-  const v = value ?? {};
-  const errorId = error ? `${field.id}-error` : undefined;
+};
 
-  function setRow(rowId: string, col: string) {
-    onChange({ ...v, [rowId]: col });
-  }
+/** Rows × columns radio grid: a table on wide screens, one radio group per row on narrow screens. */
+export function MatrixField({ field, value, onChange, error }: Props) {
+  const setRow = (rowId: string, col: string) => onChange({ ...value, [rowId]: col });
 
   return (
-    <fieldset className="field" id={field.id} aria-describedby={errorId}>
-      <legend>
-        {field.label}
-        {field.required ? " *" : ""}
-      </legend>
-      {field.help && <p className="field__help">{field.help}</p>}
-
-      {/* Desktop: table of rows x columns */}
+    <FieldsetField id={field.id} label={field.label} help={field.help} error={error} required={field.required}>
       <table className="matrix-table matrix-desktop">
         <thead>
           <tr>
@@ -48,10 +35,10 @@ export function MatrixField({
                     type="radio"
                     name={`${field.id}_${row.id}`}
                     value={col.value}
-                    checked={v[row.id] === col.value}
+                    checked={value[row.id] === col.value}
                     onChange={() => setRow(row.id, col.value)}
                     aria-label={`${row.label}: ${col.label}`}
-                    aria-invalid={error ? "true" : undefined}
+                    aria-invalid={invalidAttr(error)}
                   />
                 </td>
               ))}
@@ -60,7 +47,6 @@ export function MatrixField({
         </tbody>
       </table>
 
-      {/* Mobile: each row as its own labelled radio group */}
       <div className="matrix-mobile">
         {field.rows.map((row) => (
           <fieldset className="matrix-row-mobile" key={row.id}>
@@ -72,9 +58,9 @@ export function MatrixField({
                     type="radio"
                     name={`${field.id}_${row.id}`}
                     value={col.value}
-                    checked={v[row.id] === col.value}
+                    checked={value[row.id] === col.value}
                     onChange={() => setRow(row.id, col.value)}
-                    aria-invalid={error ? "true" : undefined}
+                    aria-invalid={invalidAttr(error)}
                   />
                   <span className="option__body">
                     <span>{col.label}</span>
@@ -85,20 +71,6 @@ export function MatrixField({
           </fieldset>
         ))}
       </div>
-
-      {error && (
-        <p className="field__error" id={errorId} role="alert">
-          {error}
-        </p>
-      )}
-
-      <style>{`
-        .matrix-desktop { display: none; }
-        @media (min-width: 720px) {
-          .matrix-desktop { display: table; }
-          .matrix-mobile { display: none; }
-        }
-      `}</style>
-    </fieldset>
+    </FieldsetField>
   );
 }

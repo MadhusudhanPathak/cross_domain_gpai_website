@@ -1,3 +1,8 @@
+/**
+ * GPAI Delphi Study backend. Receives JSON POSTs from the static site and stores them in the bound Sheet.
+ * Actions: getStatus, submit, saveDraft, getDraft. Form definitions come from FORMS in Forms.gs.
+ */
+
 /** Entry points ------------------------------------------------------- */
 function doGet() { return json_({ ok: true, service: 'gpai-delphi', time: new Date().toISOString() }); }
 
@@ -5,7 +10,9 @@ function doPost(e) {
   let req = {};
   let res;
   try {
-    req = JSON.parse(e.postData.contents);
+    if (!e || !e.postData || !e.postData.contents) return json_(fail_('BAD_REQUEST', 'Empty request.'));
+    try { req = JSON.parse(e.postData.contents); } catch (parseErr) { return json_(fail_('BAD_REQUEST', 'Malformed request.')); }
+    if (!req || typeof req !== 'object') return json_(fail_('BAD_REQUEST', 'Malformed request.'));
     if (req.hp) return json_({ ok: true });            // honeypot: pretend success
     switch (req.action) {
       case 'getStatus': res = getStatus_(req); break;
@@ -55,9 +62,14 @@ function cell_(v) {
   return /^[=+\-@\t\r]/.test(v) ? "'" + v : v;       // leading apostrophe forces text
 }
 
+/** Looks up a form definition by id, ignoring Object.prototype keys such as "constructor". */
+function formFor_(id) {
+  return Object.prototype.hasOwnProperty.call(FORMS, id) ? FORMS[id] : null;
+}
+
 /** Status ------------------------------------------------------------- */
 function getStatus_(req) {
-  const form = FORMS[req.formId];
+  const form = formFor_(req.formId);
   if (!form) return fail_('BAD_REQUEST', 'Unknown form.');
   const open = String(cfg_(form.id + '_open', 'TRUE')).toUpperCase() === 'TRUE';
   const closesAt = cfg_(form.id + '_closes_at', '');
@@ -65,7 +77,7 @@ function getStatus_(req) {
   return { ok: true, open: open && !expired, closesAt: closesAt || undefined };
 }
 
-/** Visibility + validation (mirror of src/lib/validate.ts) --------------- */
+/** Visibility + validation (mirror of src/formEngine/validate.ts) --------------- */
 function visible_(cond, data) {
   if (!cond) return true;
   const v = data[cond.field];
@@ -105,7 +117,7 @@ function validateFieldServer_(field, data, errors) {
     }
     case 'checkboxes': {
       const arr = Array.isArray(v) ? v : [];
-      const min = field.minItems || (required ? 1 : 0);
+      const min = field.minItems != null ? field.minItems : (required ? 1 : 0);
       if (arr.length < min) { errors[field.id] = 'Select at least ' + (min === 1 ? 'one option' : min + ' options') + '.'; return; }
       const allowed = {}; field.options.forEach(function (o) { allowed[o.value] = true; });
       if (arr.some(function (x) { return !allowed[x]; })) errors[field.id] = 'Contains an invalid option.';
@@ -214,7 +226,7 @@ function sheetFor_(form) {
 
 /** Submit ------------------------------------------------------------------- */
 function submit_(req) {
-  const form = FORMS[req.formId];
+  const form = formFor_(req.formId);
   if (!form) return fail_('BAD_REQUEST', 'Unknown form.');
   const st = getStatus_(req);
   if (!st.open) return fail_('CLOSED', 'This form is closed. Contact ' + cfg_('contact_email', 'the research team') + '.');
@@ -259,9 +271,12 @@ function submit_(req) {
     deleteDraft_(form.id, email);
   } finally { lock.releaseLock(); }
 
+  // The row is stored; mail failures are logged but must not turn a saved submission into an error.
   let copySent = false;
-  if (req.copyRequested) copySent = sendCopy_(form, data, submissionId, email);
-  notify_(form, data);
+  try {
+    if (req.copyRequested) copySent = sendCopy_(form, data, submissionId, email);
+  } catch (err) { log_('ERROR', 'sendCopy', String(err)); }
+  try { notify_(form, data); } catch (err) { log_('ERROR', 'notify', String(err)); }
   return { ok: true, submissionId: submissionId, copySent: copySent };
 }
 
@@ -354,7 +369,7 @@ function draftRow_(sh, formId, email) {                // returns 1-based row or
   return 0;
 }
 function saveDraft_(req) {
-  const form = FORMS[req.formId]; if (!form) return fail_('BAD_REQUEST', 'Unknown form.');
+  const form = formFor_(req.formId); if (!form) return fail_('BAD_REQUEST', 'Unknown form.');
   const email = String(req.email || '').trim().toLowerCase();
   if (!EMAIL_RE_.test(email)) return fail_('VALIDATION', 'Enter a valid email address to save a draft.');
   if (!rateLimit_('draft:' + email, 10, 3600)) return fail_('RATE_LIMIT', 'Too many saves. Please try again later.');
@@ -381,14 +396,18 @@ function saveDraft_(req) {
   } finally { lock.releaseLock(); }
 }
 function getDraft_(req) {
+  const form = formFor_(req.formId); if (!form) return fail_('BAD_REQUEST', 'Unknown form.');
   const email = String(req.email || '').trim().toLowerCase();
+  if (!EMAIL_RE_.test(email)) return fail_('VALIDATION', 'Enter a valid email address.');
   if (!rateLimit_('getdraft:' + email, 10, 3600)) return fail_('RATE_LIMIT', 'Too many attempts. Please try again later.');
   const sh = SpreadsheetApp.getActive().getSheetByName('Drafts');
-  const row = draftRow_(sh, req.formId, email);
+  const row = draftRow_(sh, form.id, email);
   if (!row) return fail_('NOT_FOUND', 'No saved draft found for this email.');
   const r = sh.getRange(row, 1, 1, 5).getValues()[0];
   if (hash_(String(req.code || '').trim().toUpperCase()) !== r[2]) return fail_('BAD_CODE', 'That resume code is not correct.');
-  return { ok: true, data: JSON.parse(r[3]), savedAt: r[4] };
+  let data;
+  try { data = JSON.parse(r[3]); } catch (err) { return fail_('SERVER', 'The saved draft could not be read.'); }
+  return { ok: true, data: data, savedAt: r[4] };
 }
 function deleteDraft_(formId, email) {
   const sh = SpreadsheetApp.getActive().getSheetByName('Drafts');

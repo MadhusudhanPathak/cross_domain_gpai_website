@@ -22,4 +22,4 @@ This folder is not deployed automatically. Copy its contents into the Apps Scrip
 
 ## Testing
 
-See §15 of the blueprint for curl commands and the functional checklist.
+See §15 of [`docs/blueprint.md`](../docs/blueprint.md) for curl commands and the functional checklist.

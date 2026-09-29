@@ -1,10 +1,10 @@
 import { forwardRef } from "react";
-import type { Field, FieldErrors } from "../lib/formTypes";
+import type { Field, FieldErrors } from "../../formEngine/types";
 
-export const ErrorSummary = forwardRef<HTMLDivElement, { errors: FieldErrors; fields: Field[] }>(function ErrorSummary(
-  { errors, fields },
-  ref
-) {
+type Props = { errors: FieldErrors; fields: Field[] };
+
+/** Focusable list of the current step's errors, each linking to its field. Renders nothing when there are none. */
+export const ErrorSummary = forwardRef<HTMLDivElement, Props>(function ErrorSummary({ errors, fields }, ref) {
   const entries = Object.entries(errors);
   if (entries.length === 0) return null;
   const labelFor = (id: string) => fields.find((f) => f.id === id)?.label ?? id;

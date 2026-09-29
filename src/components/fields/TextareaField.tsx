@@ -1,33 +1,34 @@
-import { FieldWrapper } from "./FieldWrapper";
-import type { Field } from "../../lib/formTypes";
+import type { FieldOf } from "../../formEngine/types";
+import { LabelledField } from "./FieldShell";
 
-export function TextareaField({
-  field,
-  value,
-  onChange,
-  error,
-}: {
-  field: Extract<Field, { type: "textarea" }>;
+type Props = {
+  field: FieldOf<"textarea">;
   value: string;
-  onChange: (v: string) => void;
+  onChange: (value: string) => void;
   error?: string;
-}) {
-  const v = value ?? "";
+};
+
+export function TextareaField({ field, value, onChange, error }: Props) {
   return (
-    <FieldWrapper id={field.id} label={field.label} help={field.help} error={error} required={field.required}>
-      <textarea
-        id={field.id}
-        name={field.id}
-        value={v}
-        maxLength={field.maxLength}
-        required={field.required}
-        onChange={(e) => onChange(e.target.value)}
-      />
-      {field.maxLength && (
-        <div className="char-count">
-          {v.length} / {field.maxLength}
-        </div>
+    <LabelledField id={field.id} label={field.label} help={field.help} error={error} required={field.required}>
+      {(aria) => (
+        <>
+          <textarea
+            id={field.id}
+            name={field.id}
+            value={value}
+            maxLength={field.maxLength}
+            required={field.required}
+            onChange={(e) => onChange(e.target.value)}
+            {...aria}
+          />
+          {field.maxLength && (
+            <div className="char-count">
+              {value.length} / {field.maxLength}
+            </div>
+          )}
+        </>
       )}
-    </FieldWrapper>
+    </LabelledField>
   );
 }

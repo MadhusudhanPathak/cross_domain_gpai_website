@@ -1,29 +1,17 @@
-import type { Field } from "../../lib/formTypes";
+import type { FieldOf } from "../../formEngine/types";
+import { FieldsetField, invalidAttr } from "./FieldShell";
+import { OptionLabel } from "./OptionLabel";
 
-export function RadioField({
-  field,
-  value,
-  onChange,
-  error,
-}: {
-  field: Extract<Field, { type: "radio" }>;
+type Props = {
+  field: FieldOf<"radio">;
   value: string;
-  onChange: (v: string) => void;
+  onChange: (value: string) => void;
   error?: string;
-}) {
-  const errorId = error ? `${field.id}-error` : undefined;
-  const helpId = field.help ? `${field.id}-help` : undefined;
+};
+
+export function RadioField({ field, value, onChange, error }: Props) {
   return (
-    <fieldset className="field" id={field.id} aria-describedby={[helpId, errorId].filter(Boolean).join(" ") || undefined}>
-      <legend>
-        {field.label}
-        {field.required ? " *" : ""}
-      </legend>
-      {field.help && (
-        <p className="field__help" id={helpId}>
-          {field.help}
-        </p>
-      )}
+    <FieldsetField id={field.id} label={field.label} help={field.help} error={error} required={field.required}>
       <div className="option-list">
         {field.options.map((o) => (
           <label className="option" key={o.value}>
@@ -33,20 +21,12 @@ export function RadioField({
               value={o.value}
               checked={value === o.value}
               onChange={() => onChange(o.value)}
-              aria-invalid={error ? "true" : undefined}
+              aria-invalid={invalidAttr(error)}
             />
-            <span className="option__body">
-              <span>{o.label}</span>
-              {o.description && <span className="option__desc">{o.description}</span>}
-            </span>
+            <OptionLabel option={o} />
           </label>
         ))}
       </div>
-      {error && (
-        <p className="field__error" id={errorId} role="alert">
-          {error}
-        </p>
-      )}
-    </fieldset>
+    </FieldsetField>
   );
 }

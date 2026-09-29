@@ -1,22 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
+import { ContactLink } from "../components/ContactLink";
 import { site } from "../content/site";
+import { loadDoneInfo, type DoneInfo } from "../services/storage";
 
-type DoneInfo = { submissionId: string; copySent: boolean; email?: string; commitment?: string };
-
+/** Confirmation page. Details come from sessionStorage, so a direct visit shows only the generic message. */
 export function Done({ formId }: { formId: string }) {
   const [info, setInfo] = useState<DoneInfo | null>(null);
 
   useEffect(() => {
-    try {
-      const raw = sessionStorage.getItem(`gpai:done:${formId}`);
-      if (raw) setInfo(JSON.parse(raw));
-    } catch {
-      // ignore
-    }
+    setInfo(loadDoneInfo(formId));
   }, [formId]);
 
-  const shortId = info?.submissionId ? info.submissionId.slice(0, 8) : undefined;
+  const shortId = info?.submissionId.slice(0, 8);
   const isDeclined = info?.commitment === "no";
 
   return (
@@ -29,15 +25,13 @@ export function Done({ formId }: { formId: string }) {
         <p>{info.copySent ? `A copy was sent to ${info.email}.` : "You did not ask for a copy of your responses."}</p>
       )}
 
-      {!isDeclined ? (
+      {isDeclined ? (
         <p>
-          We will be in touch by {site.replyByDate}. Questions? Contact{" "}
-          <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
+          Thank you for letting us know. If your availability changes, contact <ContactLink />.
         </p>
       ) : (
         <p>
-          Thank you for letting us know. If your availability changes, contact{" "}
-          <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
+          We will be in touch by {site.replyByDate}. Questions? Contact <ContactLink />.
         </p>
       )}
 

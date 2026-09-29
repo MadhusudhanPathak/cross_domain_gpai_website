@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
-import type { FormData } from "./formTypes";
+import type { FormData } from "../formEngine/types";
 
+/** Holds a form's answers, with stable setters for one field or the whole object. */
 export function useFormState(initial: FormData | (() => FormData) = {}) {
   const [data, setData] = useState<FormData>(initial);
 

@@ -1,84 +1,156 @@
 # GPAI Delphi Study Website
 
-A light static site that hosts every form used in the GPAI Delphi study. All submissions are stored in a Google Sheet via a Google Apps Script web app. No user accounts, no analytics, no third-party requests besides the Apps Script call.
+A small static site that hosts the forms for the GPAI Delphi study. Submissions go to a Google Sheet through a Google Apps Script web app. The site has no user accounts, no cookies, no analytics, and makes no third-party requests other than the Apps Script call.
 
-See [`gpai-delphi-site-blueprint.md`](gpai-delphi-site-blueprint.md) for the full specification this repo implements.
+Forms are defined in JSON (`src/forms/`), so a new form needs no new page code. The design specification the site was built from is in [`docs/blueprint.md`](docs/blueprint.md).
 
-## Stack
+## Prerequisites
 
-Vite + React 18 + TypeScript, `wouter` for routing, plain CSS with design tokens, self-hosted variable fonts, no form/schema library (forms are driven by JSON, see `src/forms/`).
+- Node.js 18 or later, and npm
+- A Google account (for the Sheet and the Apps Script backend)
+- A Vercel account (or any static host that can rewrite unknown paths to `index.html`)
 
-## Local development
+## Setup
 
 ```bash
 npm install
-cp .env.example .env.local   # fill in VITE_APPS_SCRIPT_URL once the backend is deployed
+cp .env.example .env.local   # optional: point at a different Apps Script deployment
 npm run dev
 ```
 
-Run tests:
+| Script | Purpose |
+| --- | --- |
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Type-check, then build into `dist/` |
+| `npm run preview` | Serve the production build locally |
+| `npm test` | Run the unit tests (Vitest) |
+| `npm run export:schemas` | Regenerate `apps-script/Forms.gs` from `src/forms/*.json` |
 
-```bash
-npm test
+### Configuration
+
+| Setting | Where | Notes |
+| --- | --- | --- |
+| `VITE_APPS_SCRIPT_URL` | `.env.local` or the host's environment variables | Apps Script `/exec` URL. If unset or blank, the default in `src/config.ts` is used. The URL is public by design, so it is not a secret. |
+| Study copy, contact email, dates | `src/content/site.ts`, `src/content/process.ts` | Owner-editable text |
+| Form open/close, notification email | The Sheet's `Config` tab | Takes effect without a redeploy |
+
+## Architecture
+
+```text
+Browser (React SPA on Vercel)
+  └─ POST text/plain JSON ──> Apps Script web app (apps-script/Code.gs)
+                                └─ Google Sheet tabs: Interest, Drafts, Config, Panel, Log
 ```
+
+```text
+src/
+├─ main.tsx, App.tsx      Entry point and routes
+├─ config.ts              Runtime configuration (backend URL, timeouts)
+├─ content/               Owner-editable copy (study details, process stages)
+├─ forms/                 JSON form definitions and the form registry
+├─ formEngine/            Pure form logic: types, visibility, validation, defaults
+├─ services/              Backend API client and browser storage
+├─ hooks/                 React hooks for form state, status and autosave
+├─ components/
+│  ├─ layout/             Header, footer, page shell
+│  ├─ form/               Multi-step form renderer, drafts, error summary
+│  └─ fields/             One component per field type
+├─ pages/                 Route components
+├─ utils/                 Date, UUID and type-guard helpers
+└─ styles/                Design tokens and global CSS
+apps-script/              Backend source, pasted into the Sheet's Apps Script project
+scripts/                  Build helpers (schema export)
+docs/                     Design specification
+```
+
+Key points:
+
+- **Validation runs twice.** `src/formEngine/validate.ts` validates in the browser, and `apps-script/Code.gs` repeats the same rules on the server. Change them together.
+- **`Forms.gs` is generated.** The backend reads form definitions from `apps-script/Forms.gs`, which `npm run export:schemas` builds from `src/forms/*.json`.
+- **Requests use `Content-Type: text/plain`**, which avoids a CORS preflight that Apps Script cannot answer.
+- **Answers are autosaved** to `localStorage` on the visitor's device. "Save and continue later" also stores a server-side draft, protected by a resume code sent by email.
+
+See [`AGENTS.md`](AGENTS.md) for what each module is responsible for.
 
 ## Deployment
 
-### A. Google Sheet and Apps Script (about 15 minutes)
+### A. Google Sheet and Apps Script
 
-1. Create the Google Sheet **`GPAI Delphi Study: Data`**.
-2. Open **Extensions > Apps Script**. Follow [`apps-script/README.md`](apps-script/README.md) to paste in `Code.gs`, generate and paste `Forms.gs`, and paste the manifest.
-3. Run `setup()` once from the editor and authorize the permissions (choose **Advanced > Go to project (unsafe)**, since it is your own script).
-4. Fill the `Config` tab: `contact_email`, `notify_email`, `site_url`, `study_name`.
-5. **Deploy > New deployment > Web app.** Execute as **Me**. Who has access: **Anyone**. Copy the `/exec` URL.
-6. Test with curl (see §15 of the blueprint).
+1. Create a Google Sheet named **`GPAI Delphi Study: Data`**.
+2. Open **Extensions > Apps Script** and follow [`apps-script/README.md`](apps-script/README.md) to add `Code.gs`, `Forms.gs` and the manifest.
+3. Run `setup()` once from the editor and authorize the permissions.
+4. Fill in the `Config` tab: `contact_email`, `notify_email`, `site_url`, `study_name`.
+5. **Deploy > New deployment > Web app**, execute as **Me**, access **Anyone**. Copy the `/exec` URL.
+6. Check it works:
 
-### B. GitHub and Vercel (about 10 minutes)
+   ```bash
+   URL="https://script.google.com/macros/s/XXXX/exec"
+   curl -sL "$URL"
+   curl -sL -X POST "$URL" -H "Content-Type: text/plain" -d '{"action":"getStatus","formId":"interest"}'
+   ```
 
-1. Push this repo to GitHub.
-2. In Vercel: **Add New > Project**, import the repo. Framework preset **Vite**, build `npm run build`, output `dist`.
-3. Add the environment variable `VITE_APPS_SCRIPT_URL` (the `/exec` URL) for Production and Preview.
-4. Deploy. Open the site and submit a test response. Check the row appears in the `Interest` tab.
-5. Optionally add a custom domain in Vercel, then update `site_url` in the `Config` tab.
+### B. Vercel
 
-### C. Updating later
+1. Push the repository to GitHub and import it in Vercel (framework preset **Vite**, build `npm run build`, output `dist`).
+2. Optionally set `VITE_APPS_SCRIPT_URL` for Production and Preview. Otherwise the default in `src/config.ts` is used.
+3. Deploy, submit a test response, and check that a row appears in the `Interest` tab.
+4. If you add a custom domain, update `site_url` in the `Config` tab.
 
-- **Front end:** push to GitHub; Vercel redeploys automatically.
-- **Backend:** edit the script in the Apps Script editor, then **Deploy > Manage deployments > (pencil) > Version: New version > Deploy** to keep the same URL.
-- **After changing any form JSON:** run `npm run export:schemas`, paste the new `apps-script/Forms.gs`, redeploy the script, push the front end. Run `setup()` again if new columns should appear immediately (it only adds missing headers, it never touches existing data).
+`vercel.json` sets up the SPA rewrites and the security headers (CSP, `noindex`, no referrer).
 
-## Adding a new form (Round 1, Round 2, call scheduling, ...)
+### C. Updating
 
-1. Add `src/forms/<id>.json` following the field-type spec in §6 of the blueprint.
+- **Front end:** push to GitHub. Vercel redeploys automatically.
+- **Backend:** edit the script, then use **Deploy > Manage deployments > Edit > Version: New version**, which keeps the same URL.
+- **After changing a form's JSON:** run `npm run export:schemas`, paste the new `Forms.gs`, redeploy the script, and push the front end. Run `setup()` again to add any new column headers. It never changes existing data.
+
+## Usage
+
+### Adding a form
+
+1. Create `src/forms/<id>.json`. The field types are listed in `src/formEngine/types.ts`, and §6 of the blueprint describes them in full.
 2. Register it in `src/forms/index.ts`.
-3. Add `<id>_open` (and optionally `<id>_closes_at`) to the Sheet's `Config` tab.
-4. Run `npm run export:schemas`, paste the generated `apps-script/Forms.gs` into the Apps Script project, redeploy (new version, same URL), then run `setup()` to create the new tab and headers.
+3. Add `<id>_open` (and optionally `<id>_closes_at`) to the `Config` tab.
+4. Run `npm run export:schemas`, paste `Forms.gs`, redeploy the script, and run `setup()`.
 
-No new page code is needed — `/forms/<id>` renders automatically from the registry.
+The form is then live at `/forms/<id>`. A minimal definition:
 
-For panel-only forms (`"access": "panel"`), Round 2, ratings storage, and call scheduling, see §16 of the blueprint for the extension design (not built in Phase 1).
+```json
+{
+  "id": "feedback",
+  "version": "1.0.0",
+  "title": "Feedback",
+  "submitLabel": "Send",
+  "sheet": "Feedback",
+  "access": "open",
+  "sections": [
+    {
+      "id": "main",
+      "title": "Your feedback",
+      "fields": [
+        { "id": "email", "type": "email", "label": "Email", "required": true },
+        { "id": "comments", "type": "textarea", "label": "Comments", "maxLength": 2000 }
+      ]
+    }
+  ]
+}
+```
 
-## Placeholders to fill in before launch
+Panel-only forms, Round 2 and call scheduling are not built yet. §16 of the blueprint describes how to add them.
 
-All owner-editable content lives in [`src/content/site.ts`](src/content/site.ts) and [`src/content/process.ts`](src/content/process.ts), plus the Sheet's `Config` tab.
+### Content to fill in before launch
 
-| Placeholder | Where |
-|---|---|
-| Study name / short title | `src/content/site.ts` (`studyName`, `shortName`), Config `study_name` |
-| Contact email | `src/content/site.ts` (`contactEmail`), Config `contact_email` |
-| Site URL | `src/content/site.ts` (`siteUrl`), Config `site_url` |
-| Reply-by date | `src/content/site.ts` (`replyByDate`) |
-| Retention period | `src/content/site.ts` (`retentionPeriod`), and the `consent_storage` text in `src/forms/interest.json` |
-| Data controller / institution, ethics/DPO reference | `src/content/site.ts` (`dataController`), `src/pages/Privacy.tsx` |
-| Transcription tool (if any) | `src/content/site.ts` (`transcriptionTool`) |
-| Team names | `src/content/site.ts` (`teamNames`) |
-| Interest form close date | Config `interest_closes_at` |
+| Item | Where |
+| --- | --- |
+| Study name, contact email, site URL, reply-by date, retention period, data controller, transcription tool, team | `src/content/site.ts` (and the matching `Config` keys) |
 | Stage descriptions and dates | `src/content/process.ts` |
+| Retention wording in the consent text | `src/forms/interest.json` (`consent_storage`) |
+| Interest form close date | `Config` → `interest_closes_at` |
 
-**Before the site goes live:** the Privacy page's wording needs sign-off from the institution's data protection officer or ethics committee. This repo provides structure only, per the blueprint.
+The institution's data protection officer or ethics committee must approve the wording of the Privacy page (`src/pages/Privacy.tsx`) before the site goes live.
 
-## Security notes
+## Security
 
-- No secrets in the front end. The only environment variable is the public Apps Script URL, which cannot be made secret — abuse protection (honeypot, rate limits, server-side validation) is implemented in `apps-script/Code.gs` instead.
-- All POSTs to Apps Script use `Content-Type: text/plain` to avoid a CORS preflight that Apps Script cannot answer.
-- No cookies, no analytics, no third-party scripts or fonts.
+- The front end holds no secrets. Abuse protection (honeypot, rate limits, server-side validation, formula-injection escaping, payload size caps) lives in `apps-script/Code.gs`.
+- Resume codes are stored only as SHA-256 hashes.
+- The site sets no cookies, loads no third-party scripts or fonts, and tells search engines not to index it.

@@ -1,18 +1,16 @@
-import type { Field } from "../../lib/formTypes";
+import type { FieldOf } from "../../formEngine/types";
+import { FieldError, describedBy, errorIdFor, helpIdFor, invalidAttr } from "./FieldShell";
 
-export function CheckboxField({
-  field,
-  value,
-  onChange,
-  error,
-}: {
-  field: Extract<Field, { type: "checkbox" }>;
+type Props = {
+  field: FieldOf<"checkbox">;
   value: boolean;
-  onChange: (v: boolean) => void;
+  onChange: (value: boolean) => void;
   error?: string;
-}) {
-  const errorId = error ? `${field.id}-error` : undefined;
-  const helpId = field.help ? `${field.id}-help` : undefined;
+};
+
+/** A single yes/no checkbox whose label and help sit inside the clickable option card. */
+export function CheckboxField({ field, value, onChange, error }: Props) {
+  const helpId = helpIdFor(field.id, field.help);
   return (
     <div className="field">
       <label className="option">
@@ -20,10 +18,10 @@ export function CheckboxField({
           type="checkbox"
           id={field.id}
           name={field.id}
-          checked={!!value}
+          checked={value}
           onChange={(e) => onChange(e.target.checked)}
-          aria-describedby={[helpId, errorId].filter(Boolean).join(" ") || undefined}
-          aria-invalid={error ? "true" : undefined}
+          aria-describedby={describedBy(helpId, errorIdFor(field.id, error))}
+          aria-invalid={invalidAttr(error)}
         />
         <span className="option__body">
           <span>{field.label}</span>
@@ -34,11 +32,7 @@ export function CheckboxField({
           )}
         </span>
       </label>
-      {error && (
-        <p className="field__error" id={errorId} role="alert">
-          {error}
-        </p>
-      )}
+      <FieldError id={field.id} error={error} />
     </div>
   );
 }

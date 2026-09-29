@@ -1,10 +1,10 @@
-import React from "react";
+import type { ReactNode } from "react";
 
-// Minimal markdown: paragraphs (blank-line separated), **bold**, [text](url) links, "- " bullet lists.
-export function MarkdownLite({ text, className }: { text: string; className?: string }) {
+/** Renders a small markdown subset: blank-line paragraphs, "- " bullet lists, **bold** and [text](https://...) links. */
+export function MarkdownLite({ text }: { text: string }) {
   const blocks = text.trim().split(/\n\s*\n/);
   return (
-    <div className={className ? `markdown-lite ${className}` : "markdown-lite"}>
+    <div className="markdown-lite">
       {blocks.map((block, i) => {
         const lines = block.split("\n").map((l) => l.trim());
         const isList = lines.every((l) => l.startsWith("- "));
@@ -23,8 +23,8 @@ export function MarkdownLite({ text, className }: { text: string; className?: st
   );
 }
 
-function inline(text: string): React.ReactNode[] {
-  const parts: React.ReactNode[] = [];
+function inline(text: string): ReactNode[] {
+  const parts: ReactNode[] = [];
   const re = /\*\*(.+?)\*\*|\[(.+?)\]\((https?:\/\/[^\s)]+)\)/g;
   let last = 0;
   let m: RegExpExecArray | null;

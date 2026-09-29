@@ -1,8 +1,8 @@
-import React from "react";
+import type { ReactNode } from "react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="layout">
       <a href="#main" className="skip-link">

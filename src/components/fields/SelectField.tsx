@@ -1,29 +1,35 @@
-import { FieldWrapper } from "./FieldWrapper";
-import type { Field } from "../../lib/formTypes";
+import type { FieldOf } from "../../formEngine/types";
+import { LabelledField } from "./FieldShell";
 
-export function SelectField({
-  field,
-  value,
-  onChange,
-  error,
-}: {
-  field: Extract<Field, { type: "select" }>;
+type Props = {
+  field: FieldOf<"select">;
   value: string;
-  onChange: (v: string) => void;
+  onChange: (value: string) => void;
   error?: string;
-}) {
+};
+
+export function SelectField({ field, value, onChange, error }: Props) {
   return (
-    <FieldWrapper id={field.id} label={field.label} help={field.help} error={error} required={field.required}>
-      <select id={field.id} name={field.id} value={value ?? ""} required={field.required} onChange={(e) => onChange(e.target.value)}>
-        <option value="" disabled>
-          Choose an option
-        </option>
-        {field.options.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
+    <LabelledField id={field.id} label={field.label} help={field.help} error={error} required={field.required}>
+      {(aria) => (
+        <select
+          id={field.id}
+          name={field.id}
+          value={value}
+          required={field.required}
+          onChange={(e) => onChange(e.target.value)}
+          {...aria}
+        >
+          <option value="" disabled>
+            Choose an option
           </option>
-        ))}
-      </select>
-    </FieldWrapper>
+          {field.options.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+      )}
+    </LabelledField>
   );
 }

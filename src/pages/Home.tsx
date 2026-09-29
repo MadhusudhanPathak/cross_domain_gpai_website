@@ -12,7 +12,7 @@ export function Home() {
         <strong>Time commitment:</strong> {site.timeCommitment}
       </p>
 
-      <div style={{ margin: "2rem 0" }}>
+      <div className="cta">
         <Link href="/forms/interest" className="button button--primary">
           Express interest
         </Link>

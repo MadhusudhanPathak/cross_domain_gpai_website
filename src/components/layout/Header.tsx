@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { site } from "../content/site";
+import { site } from "../../content/site";
 
 export function Header() {
   return (

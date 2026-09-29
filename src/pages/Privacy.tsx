@@ -1,3 +1,4 @@
+import { ContactLink } from "../components/ContactLink";
 import { site } from "../content/site";
 
 export function Privacy() {
@@ -7,8 +8,8 @@ export function Privacy() {
 
       <h2>Who is responsible for the data</h2>
       <p>
-        {site.dataController} is responsible for this study. Contact <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>{" "}
-        with any questions or requests about your data.
+        {site.dataController} is responsible for this study. Contact <ContactLink /> with any questions or requests about
+        your data.
       </p>
 
       <h2>What we collect</h2>
@@ -41,8 +42,7 @@ export function Privacy() {
 
       <h2>Your rights</h2>
       <p>
-        You may ask to access, correct or delete your data, or withdraw from the study, at any time by contacting{" "}
-        <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
+        You may ask to access, correct or delete your data, or withdraw from the study, at any time by contacting <ContactLink />.
       </p>
 
       <h2>Cookies and tracking</h2>

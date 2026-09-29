@@ -1,46 +1,25 @@
-import type { Field } from "../../lib/formTypes";
+import type { FieldOf, Option } from "../../formEngine/types";
+import { FieldsetField, invalidAttr } from "./FieldShell";
+import { OptionLabel } from "./OptionLabel";
 
-export function CheckboxesField({
-  field,
-  value,
-  onChange,
-  error,
-}: {
-  field: Extract<Field, { type: "checkboxes" }>;
+type Props = {
+  field: FieldOf<"checkboxes">;
   value: string[];
-  onChange: (v: string[]) => void;
+  onChange: (value: string[]) => void;
   error?: string;
-}) {
-  const v = value ?? [];
-  const errorId = error ? `${field.id}-error` : undefined;
-  const helpId = field.help ? `${field.id}-help` : undefined;
+};
 
-  function toggle(opt: (typeof field.options)[number]) {
-    const exclusiveValues = field.options.filter((o) => o.exclusive).map((o) => o.value);
-    const isSelected = v.includes(opt.value);
-    if (isSelected) {
-      onChange(v.filter((x) => x !== opt.value));
-      return;
-    }
-    if (opt.exclusive) {
-      onChange([opt.value]);
-      return;
-    }
-    const next = v.filter((x) => !exclusiveValues.includes(x));
-    onChange([...next, opt.value]);
-  }
+/** Toggles `option` in `selected`; an exclusive option (e.g. "None of these") clears the others and vice versa. */
+function toggleOption(options: Option[], selected: string[], option: Option): string[] {
+  if (selected.includes(option.value)) return selected.filter((x) => x !== option.value);
+  if (option.exclusive) return [option.value];
+  const exclusive = new Set(options.filter((o) => o.exclusive).map((o) => o.value));
+  return [...selected.filter((x) => !exclusive.has(x)), option.value];
+}
 
+export function CheckboxesField({ field, value, onChange, error }: Props) {
   return (
-    <fieldset className="field" id={field.id} aria-describedby={[helpId, errorId].filter(Boolean).join(" ") || undefined}>
-      <legend>
-        {field.label}
-        {field.required ? " *" : ""}
-      </legend>
-      {field.help && (
-        <p className="field__help" id={helpId}>
-          {field.help}
-        </p>
-      )}
+    <FieldsetField id={field.id} label={field.label} help={field.help} error={error} required={field.required}>
       <div className="option-list">
         {field.options.map((o) => (
           <label className="option" key={o.value}>
@@ -48,22 +27,14 @@ export function CheckboxesField({
               type="checkbox"
               name={field.id}
               value={o.value}
-              checked={v.includes(o.value)}
-              onChange={() => toggle(o)}
-              aria-invalid={error ? "true" : undefined}
+              checked={value.includes(o.value)}
+              onChange={() => onChange(toggleOption(field.options, value, o))}
+              aria-invalid={invalidAttr(error)}
             />
-            <span className="option__body">
-              <span>{o.label}</span>
-              {o.description && <span className="option__desc">{o.description}</span>}
-            </span>
+            <OptionLabel option={o} />
           </label>
         ))}
       </div>
-      {error && (
-        <p className="field__error" id={errorId} role="alert">
-          {error}
-        </p>
-      )}
-    </fieldset>
+    </FieldsetField>
   );
 }

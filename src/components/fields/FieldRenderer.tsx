@@ -1,74 +1,81 @@
-import type { Field, FormData } from "../../lib/formTypes";
+import type { ComponentType } from "react";
+import type { Field, FormData } from "../../formEngine/types";
+import { isRecord } from "../../utils/guards";
+import { MarkdownLite } from "../MarkdownLite";
+import { ProcessOverview } from "../ProcessOverview";
+import { AvailabilityField } from "./AvailabilityField";
+import { CheckboxField } from "./CheckboxField";
+import { CheckboxesField } from "./CheckboxesField";
+import { ConsentsField } from "./ConsentsField";
+import { MatrixField } from "./MatrixField";
+import { RadioField } from "./RadioField";
+import { SelectField } from "./SelectField";
 import { TextField } from "./TextField";
 import { TextareaField } from "./TextareaField";
-import { SelectField } from "./SelectField";
-import { RadioField } from "./RadioField";
-import { CheckboxesField } from "./CheckboxesField";
-import { CheckboxField } from "./CheckboxField";
-import { MatrixField } from "./MatrixField";
-import { AvailabilityField } from "./AvailabilityField";
-import { ConsentsField } from "./ConsentsField";
-import { MarkdownLite } from "../../lib/markdownLite";
-import { ProcessOverview } from "../ProcessOverview";
 
-export function FieldRenderer({
-  field,
-  data,
-  setField,
-  error,
-}: {
+type Props = {
   field: Field;
   data: FormData;
-  setField: (id: string, v: unknown) => void;
+  setField: (id: string, value: unknown) => void;
   error?: string;
-}) {
+};
+
+/** Components that an `info` field may embed via its `component` property. */
+const INFO_COMPONENTS: Record<string, ComponentType> = {
+  ProcessOverview,
+};
+
+const asString = (v: unknown): string => (typeof v === "string" ? v : "");
+const asStringArray = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : []);
+const asRecord = <T,>(v: unknown): Record<string, T> => (isRecord(v) ? (v as Record<string, T>) : {});
+
+function asSlotMap(v: unknown): Record<string, string[]> {
+  const out: Record<string, string[]> = {};
+  for (const [date, slots] of Object.entries(asRecord<unknown>(v))) out[date] = asStringArray(slots);
+  return out;
+}
+
+/** Maps a field definition to its input component, coercing stored values to the shape each component expects. */
+export function FieldRenderer({ field, data, setField, error }: Props) {
+  const value = data[field.id];
+  const onChange = (v: unknown) => setField(field.id, v);
+
   switch (field.type) {
-    case "info":
+    case "info": {
+      const Embedded = field.component ? INFO_COMPONENTS[field.component] : undefined;
       return (
         <div className="field" id={field.id}>
-          {field.component === "ProcessOverview" ? <ProcessOverview /> : field.text ? <MarkdownLite text={field.text} /> : null}
+          {Embedded ? <Embedded /> : field.text ? <MarkdownLite text={field.text} /> : null}
         </div>
       );
+    }
     case "text":
     case "email":
     case "url":
-      return <TextField field={field} value={(data[field.id] as string) ?? ""} onChange={(v) => setField(field.id, v)} error={error} />;
+      return <TextField field={field} value={asString(value)} onChange={onChange} error={error} />;
     case "textarea":
-      return <TextareaField field={field} value={(data[field.id] as string) ?? ""} onChange={(v) => setField(field.id, v)} error={error} />;
+      return <TextareaField field={field} value={asString(value)} onChange={onChange} error={error} />;
     case "select":
-      return <SelectField field={field} value={(data[field.id] as string) ?? ""} onChange={(v) => setField(field.id, v)} error={error} />;
+      return <SelectField field={field} value={asString(value)} onChange={onChange} error={error} />;
     case "radio":
-      return <RadioField field={field} value={(data[field.id] as string) ?? ""} onChange={(v) => setField(field.id, v)} error={error} />;
+      return <RadioField field={field} value={asString(value)} onChange={onChange} error={error} />;
     case "checkboxes":
-      return (
-        <CheckboxesField field={field} value={(data[field.id] as string[]) ?? []} onChange={(v) => setField(field.id, v)} error={error} />
-      );
+      return <CheckboxesField field={field} value={asStringArray(value)} onChange={onChange} error={error} />;
     case "checkbox":
-      return <CheckboxField field={field} value={(data[field.id] as boolean) ?? false} onChange={(v) => setField(field.id, v)} error={error} />;
+      return <CheckboxField field={field} value={value === true} onChange={onChange} error={error} />;
     case "matrix":
-      return (
-        <MatrixField field={field} value={(data[field.id] as Record<string, string>) ?? {}} onChange={(v) => setField(field.id, v)} error={error} />
-      );
+      return <MatrixField field={field} value={asRecord<string>(value)} onChange={onChange} error={error} />;
     case "availability":
       return (
         <AvailabilityField
           field={field}
-          value={(data[field.id] as Record<string, string[]>) ?? {}}
-          onChange={(v) => setField(field.id, v)}
+          value={asSlotMap(value)}
+          onChange={onChange}
           error={error}
-          timezone={data.timezone as string | undefined}
+          timezone={asString(data.timezone) || undefined}
         />
       );
     case "consents":
-      return (
-        <ConsentsField
-          field={field}
-          value={(data[field.id] as Record<string, boolean>) ?? {}}
-          onChange={(v) => setField(field.id, v)}
-          error={error}
-        />
-      );
-    default:
-      return null;
+      return <ConsentsField field={field} value={asRecord<boolean>(value)} onChange={onChange} error={error} />;
   }
 }
