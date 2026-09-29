@@ -1,8 +1,4 @@
-// The Apps Script /exec URL is public by design (the browser must call it), so a
-// hardcoded fallback is safe. It applies when the env var is missing or empty.
-const DEFAULT_URL =
-  "https://script.google.com/macros/s/AKfycbyPR2yb-2CXU1KvObr-Vnwr7nJWVK1tLTi2MoDLNtMRT4tONWjUW0c2GXtMDR3XHYD3/exec";
-const URL_: string = import.meta.env.VITE_APPS_SCRIPT_URL || DEFAULT_URL;
+const URL_ = import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined;
 
 export type ApiSuccess<T> = { ok: true } & T;
 export type ApiFailure = {

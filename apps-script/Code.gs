@@ -34,7 +34,10 @@ function cfg_(key, dflt) {
   return dflt;
 }
 function log_(level, action, message) {
-  SpreadsheetApp.getActive().getSheetByName('Log').appendRow([new Date().toISOString(), level, action || '', String(message).slice(0, 500)]);
+  // Never let logging throw (it would mask the real error), and escape values: action/message can be attacker-controlled.
+  try {
+    SpreadsheetApp.getActive().getSheetByName('Log').appendRow([new Date().toISOString(), level, cell_(String(action || '').slice(0, 100)), cell_(String(message).slice(0, 500))]);
+  } catch (e) { console.error(level + ' ' + action + ' ' + message + ' (log failed: ' + e + ')'); }
 }
 function rateLimit_(key, max, windowSec) {          // windowSec must be <= 21600 (CacheService limit)
   const cache = CacheService.getScriptCache();
@@ -227,6 +230,7 @@ function submit_(req) {
 
   const email = String(data.email || '').trim().toLowerCase();
   if (!rateLimit_('submit:' + form.id + ':' + email, 5, 3600)) return fail_('RATE_LIMIT', 'Too many attempts. Please try again in an hour.');
+  if (!rateLimit_('submit:global', 300, 3600)) return fail_('RATE_LIMIT', 'The form is busy. Please try again later.');
 
   const submissionId = String(req.submissionId || Utilities.getUuid());
   const lock = LockService.getScriptLock();
@@ -310,7 +314,7 @@ function fieldLabelValue_(field, data) {
 }
 
 function sendCopy_(form, data, submissionId, email) {
-  if (!rateLimit_('copy:' + email, 3, 3600)) return false;
+  if (!rateLimit_('copy:' + email, 3, 3600) || !rateLimit_('mail:global', 40, 3600)) return false;   // global cap protects the daily MailApp quota
   const lines = [];
   lines.push('Hello ' + (data.full_name || '') + ',');
   lines.push('');
@@ -361,6 +365,7 @@ function saveDraft_(req) {
     const sh = SpreadsheetApp.getActive().getSheetByName('Drafts');
     const row = draftRow_(sh, form.id, email), now = new Date().toISOString();
     if (!row) {                                          // first save: create code and email it
+      if (!rateLimit_('mail:global', 40, 3600)) return fail_('RATE_LIMIT', 'Too many saves right now. Please try again later.');
       const code = newCode_();
       sh.appendRow([form.id, email, hash_(code), cell_(json), now]);
       mail_(email, '[' + cfg_('study_name', 'Study') + '] Your resume code',
