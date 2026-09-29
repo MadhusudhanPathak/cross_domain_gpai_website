@@ -13,7 +13,7 @@ export const stages: Stage[] = [
   {
     id: "round1",
     label: "Round 1: independent ratings",
-    window: "1-6 Oct",
+    window: "01 - 10 Oct",
     minutes: 45,
     durationLabel: "~45 min",
     mode: "Online form, own time",
@@ -22,7 +22,7 @@ export const stages: Stage[] = [
   {
     id: "summary",
     label: "Summary prepared",
-    window: "7-8 Oct",
+    window: "10 - 12 Oct",
     minutes: 0,
     durationLabel: "none",
     mode: "Prepared by the research team",
@@ -31,7 +31,7 @@ export const stages: Stage[] = [
   {
     id: "round2",
     label: "Round 2: review and revise",
-    window: "9-15 Oct",
+    window: "13 - 20 Oct",
     minutes: 60,
     durationLabel: "~30 min + ~30 min",
     mode: "Online form, own time",
@@ -40,7 +40,7 @@ export const stages: Stage[] = [
   {
     id: "call",
     label: "Short call: reasons and overview",
-    window: "16-20 Oct",
+    window: "20 - 27 Oct",
     minutes: 15,
     durationLabel: "15 min",
     mode: "Live call, recorded and transcribed",
