@@ -72,7 +72,7 @@ export function FieldRenderer({ field, data, setField, error }: Props) {
           value={asSlotMap(value)}
           onChange={onChange}
           error={error}
-          timezone={asString(data.timezone) || undefined}
+          city={asString(data.city) || undefined}
         />
       );
     case "consents":

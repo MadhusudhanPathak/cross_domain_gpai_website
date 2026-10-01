@@ -10,13 +10,16 @@ type Props = {
   value: Availability;
   onChange: (value: Availability) => void;
   error?: string;
-  timezone?: string;
+  city?: string;
 };
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
+/** Above this many slots per day, per-slot "select all" buttons would be too cluttered to be useful. */
+const MAX_BULK_SLOT_BUTTONS = 6;
+
 /** Day-by-day grid of time-slot chips with bulk "select all" and "all day" shortcuts. */
-export function AvailabilityField({ field, value, onChange, error, timezone }: Props) {
+export function AvailabilityField({ field, value, onChange, error, city }: Props) {
   const dates = datesBetween(field.dates.from, field.dates.to);
   const allSlots = field.slots.map((s) => s.value);
   const slotsOn = (date: string) => value[date] ?? [];
@@ -47,14 +50,15 @@ export function AvailabilityField({ field, value, onChange, error, timezone }: P
 
   return (
     <FieldsetField id={field.id} label={field.label} help={field.help} error={error} required={field.required}>
-      {timezone && <p className="avail-tz">Times are in your time zone: {timezone}</p>}
+      <p className="avail-tz">Times are shown in your local time{city ? ` (${city})` : ""}.</p>
 
       <div className="avail-controls">
-        {field.slots.map((s) => (
-          <button type="button" className="button button--secondary" key={s.value} onClick={() => selectAllOf(s.value)}>
-            Select all {s.label.toLowerCase()}s
-          </button>
-        ))}
+        {field.slots.length <= MAX_BULK_SLOT_BUTTONS &&
+          field.slots.map((s) => (
+            <button type="button" className="button button--secondary" key={s.value} onClick={() => selectAllOf(s.value)}>
+              Select all {s.label.toLowerCase()}s
+            </button>
+          ))}
         <button type="button" className="button button--secondary" onClick={() => onChange({})}>
           Clear all
         </button>

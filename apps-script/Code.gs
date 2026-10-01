@@ -349,7 +349,7 @@ function sendCopy_(form, data, submissionId, email) {
   lines.push('If you would like to correct anything or withdraw, reply to this email or write to ' + cfg_('contact_email', '') + '.');
   lines.push('');
   lines.push('Thank you,');
-  lines.push(String(cfg_('study_name', 'Research team')));
+  lines.push(String(cfg_('team_names', cfg_('study_name', 'Research team'))));
   const body = lines.join('\n');
   mail_(email, '[' + cfg_('study_name', 'Study') + '] Your responses (' + submissionId.slice(0, 8) + ')', body);
   return true;
@@ -429,10 +429,12 @@ function setup() {
     const sh = ss.getSheetByName(n) || ss.insertSheet(n);
     if (!sh.getLastRow()) { sh.getRange(1, 1, 1, need[n].length).setValues([need[n]]); sh.setFrozenRows(1); }
   });
+  // Seeded from src/content/site.ts; update both if the study's contact details change.
   const cfg = ss.getSheetByName('Config');
-  if (cfg.getLastRow() < 2) cfg.getRange(2, 1, 6, 2).setValues([
-    ['interest_open', 'TRUE'], ['interest_closes_at', ''], ['contact_email', '[EMAIL]'],
-    ['notify_email', ''], ['site_url', '[SITE_URL]'], ['study_name', '[STUDY NAME]']]);
+  if (cfg.getLastRow() < 2) cfg.getRange(2, 1, 7, 2).setValues([
+    ['interest_open', 'TRUE'], ['interest_closes_at', ''], ['contact_email', 'madhu.sudhan.pathak.ais@gmail.com'],
+    ['notify_email', ''], ['site_url', 'https://crossdomaingpaiwebsite.vercel.app/'], ['study_name', 'Cross Domain GPAI Delphi Study'],
+    ['team_names', 'Elisabetta, Carola, Madhusudhan']]);
   Object.keys(FORMS).forEach(function (id) { sheetFor_(FORMS[id]); });   // creates form tabs + headers
 
   // Status dropdown on the Interest tab's status column.

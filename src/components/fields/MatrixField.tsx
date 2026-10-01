@@ -31,15 +31,17 @@ export function MatrixField({ field, value, onChange, error }: Props) {
               <th scope="row">{row.label}</th>
               {field.columns.map((col) => (
                 <td key={col.value}>
-                  <input
-                    type="radio"
-                    name={`${field.id}_${row.id}`}
-                    value={col.value}
-                    checked={value[row.id] === col.value}
-                    onChange={() => setRow(row.id, col.value)}
-                    aria-label={`${row.label}: ${col.label}`}
-                    aria-invalid={invalidAttr(error)}
-                  />
+                  <label className="matrix-cell">
+                    <input
+                      type="radio"
+                      name={`${field.id}_${row.id}`}
+                      value={col.value}
+                      checked={value[row.id] === col.value}
+                      onChange={() => setRow(row.id, col.value)}
+                      aria-label={`${row.label}: ${col.label}`}
+                      aria-invalid={invalidAttr(error)}
+                    />
+                  </label>
                 </td>
               ))}
             </tr>

@@ -11,8 +11,9 @@ export function Process() {
       <div className="faq-item">
         <h3>What if I am busy some days?</h3>
         <p>
-          The availability grid lets you mark exactly when you can work, so the team can plan around busy days. Round 1 and
-          Round 2 can be completed at any point within their windows, in your own time.
+          Round 1 and Round 2 are asynchronous: you can complete them at any point within their windows, in your own time.
+          The only fixed-time commitment is the 30-minute call near the end, and the availability grid in the interest
+          form is only there to help us find a slot for that one call.
         </p>
       </div>
 
@@ -27,7 +28,7 @@ export function Process() {
       <div className="faq-item">
         <h3>What is recorded?</h3>
         <p>
-          The 15-minute call at the end of the process is recorded and transcribed. The recording and transcript are used
+          The 30-minute call at the end of the process is recorded and transcribed. The recording and transcript are used
           only for this research.
         </p>
       </div>

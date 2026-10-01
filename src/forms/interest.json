@@ -2,7 +2,7 @@
   "id": "interest",
   "version": "1.0.0",
   "title": "Join the expert panel",
-  "intro": "We are researching how well the techniques available today can substantiate safety and compliance claims about general-purpose AI models, and how much weight expert judgement gives them. We are assembling a panel of 16 experts, 8 technical and 8 legal or governance, for a two-round structured expert judgement exercise (Delphi).\n\nThis form records your interest, expertise and availability. **Filling it in does not commit you to take part.** The full process and time commitment (about 2 hours in total, between 1 and 20 October) are explained in step 3.",
+  "intro": "We are researching how well the techniques available today can substantiate safety and compliance claims about general-purpose AI models, and how much weight expert judgement gives them. We are building an open panel of experts, technical and legal/governance, for a two-round structured expert judgement exercise (Delphi). There is no fixed cap on how many experts we take on in either track.\n\nThe study covers four domains:\n\n**D1 Model opacity:** inspecting and explaining why a model produced an output (interpretability, explainability).\n\n**D2 Data integrity:** bias in training data, and degradation from training on synthetic model outputs (model collapse).\n\n**D3 Normative competence:** machine ethics, theory of mind, AI personas and companions, sycophancy.\n\n**D4 Adversarial robustness:** jailbreaking, prompt injection, data poisoning, AI security.\n\nThis form records your interest, expertise and availability. **Filling it in does not commit you to take part.** Almost all of the process is asynchronous and self-paced; the only fixed-time commitment is a single 30-minute call near the end, between 20 and 27 October. The full process and time commitment (about 2 hours 15 minutes in total, between 1 and 27 October) are explained in step 3.",
   "estimatedMinutes": 5,
   "submitLabel": "Send my responses",
   "sheet": "Interest",
@@ -36,7 +36,7 @@
     {
       "id": "domains",
       "title": "Your domains",
-      "description": "The study covers four technical problem areas of general-purpose AI models.",
+      "description": "The study covers four problem areas of general-purpose AI models, described at the start of this form.",
       "fields": [
         { "id": "domain_info", "type": "info", "label": "The four domains",
           "text": "**D1 Model opacity:** inspecting and explaining why a model produced an output (interpretability, explainability).\n\n**D2 Data integrity:** bias in training data, and degradation from training on synthetic model outputs (model collapse).\n\n**D3 Normative competence:** machine ethics, theory of mind, AI personas and companions, sycophancy.\n\n**D4 Adversarial robustness:** jailbreaking, prompt injection, data poisoning, AI security." },
@@ -73,7 +73,7 @@
     {
       "id": "process",
       "title": "The process and your availability",
-      "description": "Please read how the study works before you answer.",
+      "description": "Please read how the study works before you answer. Almost everything below is asynchronous and self-paced, within fixed windows. The only fixed-time commitment is a single 30-minute call near the end (20-27 October) — that is all the availability grid below is for.",
       "fields": [
         { "id": "process_info", "type": "info", "label": "How the study works", "component": "ProcessOverview" },
         { "id": "commitment", "type": "radio", "label": "Can you commit to this process and timeline?", "required": true,
@@ -82,18 +82,27 @@
             { "value": "maybe", "label": "Probably, but I may need a few extra days for one of the rounds" },
             { "value": "no", "label": "No, I cannot take part at this time" }
           ] },
-        { "id": "timezone", "type": "text", "label": "Time zone", "help": "We suggested your browser's time zone. Change it if needed, for example Europe/Rome or UTC+2.", "required": true, "maxLength": 80,
-          "default": "@browserTimeZone", "showIf": { "field": "commitment", "notEquals": "no" } },
-        { "id": "availability", "type": "availability", "label": "When are you generally available between 1 and 20 October?", "required": true,
-          "help": "Tick every slot, in your local time, when you could realistically work on a round or take a 15-minute call. We use this to plan the rounds and to schedule your call.",
-          "dates": { "from": "2026-10-01", "to": "2026-10-20" },
+        { "id": "city", "type": "text", "label": "What city will you be in between 20 and 27 October?", "help": "This is just so we can schedule your 30-minute call at a reasonable time for you.", "required": true, "maxLength": 120,
+          "showIf": { "field": "commitment", "notEquals": "no" } },
+        { "id": "availability", "type": "availability", "label": "When could you join a 30-minute call between 20 and 27 October?", "required": true,
+          "help": "This is just to get a general idea of your availability for a single 30-minute call near the end of the process — it is not a commitment and can always be changed later. Tick every half-hour slot, in your local time, that could work.",
+          "dates": { "from": "2026-10-20", "to": "2026-10-27" },
           "slots": [
-            { "value": "M", "label": "Morning", "description": "before 12:00" },
-            { "value": "A", "label": "Afternoon", "description": "12:00-17:00" },
-            { "value": "E", "label": "Evening", "description": "after 17:00" }
+            { "value": "08:00", "label": "08:00" }, { "value": "08:30", "label": "08:30" },
+            { "value": "09:00", "label": "09:00" }, { "value": "09:30", "label": "09:30" },
+            { "value": "10:00", "label": "10:00" }, { "value": "10:30", "label": "10:30" },
+            { "value": "11:00", "label": "11:00" }, { "value": "11:30", "label": "11:30" },
+            { "value": "12:00", "label": "12:00" }, { "value": "12:30", "label": "12:30" },
+            { "value": "13:00", "label": "13:00" }, { "value": "13:30", "label": "13:30" },
+            { "value": "14:00", "label": "14:00" }, { "value": "14:30", "label": "14:30" },
+            { "value": "15:00", "label": "15:00" }, { "value": "15:30", "label": "15:30" },
+            { "value": "16:00", "label": "16:00" }, { "value": "16:30", "label": "16:30" },
+            { "value": "17:00", "label": "17:00" }, { "value": "17:30", "label": "17:30" },
+            { "value": "18:00", "label": "18:00" }, { "value": "18:30", "label": "18:30" },
+            { "value": "19:00", "label": "19:00" }, { "value": "19:30", "label": "19:30" }
           ],
           "showIf": { "field": "commitment", "notEquals": "no" } },
-        { "id": "availability_notes", "type": "textarea", "label": "Anything else we should know about your availability? (optional)", "help": "For example travel, conferences, or days you are completely unavailable.", "maxLength": 1000,
+        { "id": "availability_notes", "type": "textarea", "label": "Anything else we should know about scheduling your call? (optional)", "help": "For example travel, conferences, or days you are completely unavailable between 20 and 27 October.", "maxLength": 1000,
           "showIf": { "field": "commitment", "notEquals": "no" } }
       ]
     },
@@ -107,8 +116,8 @@
             { "value": "consent_voluntary", "label": "I understand participation is voluntary and that I can withdraw at any time." },
             { "value": "consent_use", "label": "I agree that my responses may be used for this research and reported only in aggregate or anonymised form." },
             { "value": "consent_anonymised_sharing", "label": "I understand that my Round 1 and Round 2 responses and reasoning will be shared with other panellists only in anonymised form." },
-            { "value": "consent_recording", "label": "I agree that the 15-minute call will be recorded and transcribed, and that the recording and transcript will be used only for this research." },
-            { "value": "consent_storage", "label": "I agree to my contact details being stored securely for this study. [RETENTION PERIOD]" }
+            { "value": "consent_recording", "label": "I agree that the 30-minute call will be recorded and transcribed, and that the recording and transcript will be used only for this research." },
+            { "value": "consent_storage", "label": "I agree to my contact details being stored securely for this study, for up to 18 Months." }
           ] },
         { "id": "appendix_consent", "type": "radio", "label": "Appendix profile", "required": true,
           "help": "With your consent, the paper will include an appendix listing the experts who took part, with a short profile for each (name, role and affiliation, and a line on your area of expertise). Your individual ratings will never be linked to your name. Do you consent to being listed?",

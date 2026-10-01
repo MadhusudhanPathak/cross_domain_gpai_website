@@ -266,6 +266,14 @@ legend {
   text-align: center;
   border-bottom: 1px solid var(--rule);
 }
+.matrix-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5em;
+  cursor: pointer;
+}
+.matrix-cell input { width: 20px; height: 20px; cursor: pointer; }
 .matrix-table th:first-child, .matrix-table td:first-child {
   text-align: left;
 }
