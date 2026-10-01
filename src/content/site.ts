@@ -15,7 +15,7 @@ export const site = {
   studyAudience:
     "You have been invited because of your expertise in AI safety, evaluation, interpretability, security, or AI law, governance and compliance.",
   timeCommitment:
-    "About 2 hours 15 minutes in total, all between 1 and 27 October 2026. Almost all of it is asynchronous and self-paced; the only fixed-time commitment is a single 30-minute call near the end, between 20 and 27 October.",
+    "About 2 hours in total, all between 1 and 27 October 2026. Almost all of it is asynchronous and self-paced; the only fixed-time commitment is a single 15-minute call near the end, between 20 and 27 October.",
   syncCallWindow: "20 to 27 October 2026",
-  syncCallMinutes: 30,
+  syncCallMinutes: 15,
 };

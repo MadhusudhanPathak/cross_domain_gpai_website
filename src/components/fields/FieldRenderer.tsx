@@ -1,5 +1,5 @@
-import type { ComponentType } from "react";
-import type { Field, FormData } from "../../formEngine/types";
+import { useEffect, type ComponentType } from "react";
+import type { Field, FieldOf, FormData } from "../../formEngine/types";
 import { isRecord } from "../../utils/guards";
 import { MarkdownLite } from "../MarkdownLite";
 import { ProcessOverview } from "../ProcessOverview";
@@ -9,6 +9,7 @@ import { CheckboxesField } from "./CheckboxesField";
 import { ConsentsField } from "./ConsentsField";
 import { MatrixField } from "./MatrixField";
 import { RadioField } from "./RadioField";
+import { RankingField } from "./RankingField";
 import { SelectField } from "./SelectField";
 import { TextField } from "./TextField";
 import { TextareaField } from "./TextareaField";
@@ -33,6 +34,26 @@ function asSlotMap(v: unknown): Record<string, string[]> {
   const out: Record<string, string[]> = {};
   for (const [date, slots] of Object.entries(asRecord<unknown>(v))) out[date] = asStringArray(slots);
   return out;
+}
+
+type ExclusionProps = {
+  field: FieldOf<"checkboxes">;
+  value: string[];
+  onChange: (value: string[]) => void;
+  error?: string;
+  excludeValue: string;
+};
+
+/** Hides and strips an option when it is already the value of another field (`field.excludeField`), so the two stay mutually exclusive. */
+function CheckboxesWithExclusion({ field, value, onChange, error, excludeValue }: ExclusionProps) {
+  useEffect(() => {
+    if (excludeValue && value.includes(excludeValue)) onChange(value.filter((v) => v !== excludeValue));
+    // Only re-run when the value being excluded changes; `value`/`onChange` would cause an infinite loop here.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [excludeValue]);
+
+  const options = excludeValue ? field.options.filter((o) => o.value !== excludeValue) : field.options;
+  return <CheckboxesField field={{ ...field, options }} value={value} onChange={onChange} error={error} />;
 }
 
 /** Maps a field definition to its input component, coercing stored values to the shape each component expects. */
@@ -60,11 +81,21 @@ export function FieldRenderer({ field, data, setField, error }: Props) {
     case "radio":
       return <RadioField field={field} value={asString(value)} onChange={onChange} error={error} />;
     case "checkboxes":
-      return <CheckboxesField field={field} value={asStringArray(value)} onChange={onChange} error={error} />;
+      return (
+        <CheckboxesWithExclusion
+          field={field}
+          value={asStringArray(value)}
+          onChange={onChange}
+          error={error}
+          excludeValue={field.excludeField ? asString(data[field.excludeField]) : ""}
+        />
+      );
     case "checkbox":
       return <CheckboxField field={field} value={value === true} onChange={onChange} error={error} />;
     case "matrix":
       return <MatrixField field={field} value={asRecord<string>(value)} onChange={onChange} error={error} />;
+    case "ranking":
+      return <RankingField field={field} value={asStringArray(value)} onChange={onChange} error={error} />;
     case "availability":
       return (
         <AvailabilityField

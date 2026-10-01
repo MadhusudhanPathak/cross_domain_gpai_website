@@ -15,7 +15,7 @@ export function Privacy() {
       <h2>What we collect</h2>
       <p>
         Form answers (including your name, email, role, expertise and availability), your consent record, and, for
-        panellists who take part in the final stage, the recording and transcript of the 30-minute call.
+        panellists who take part in the final stage, the recording and transcript of the 15-minute call.
       </p>
 
       <h2>Why we collect it</h2>

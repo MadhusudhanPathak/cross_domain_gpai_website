@@ -4,7 +4,7 @@ const FORMS = {
     "id": "interest",
     "version": "1.0.0",
     "title": "Join the expert panel",
-    "intro": "We are researching how well the techniques available today can substantiate safety and compliance claims about general-purpose AI models, and how much weight expert judgement gives them. We are building an open panel of experts, technical and legal/governance, for a two-round structured expert judgement exercise (Delphi). There is no fixed cap on how many experts we take on in either track.\n\nThe study covers four domains:\n\n**D1 Model opacity:** inspecting and explaining why a model produced an output (interpretability, explainability).\n\n**D2 Data integrity:** bias in training data, and degradation from training on synthetic model outputs (model collapse).\n\n**D3 Normative competence:** machine ethics, theory of mind, AI personas and companions, sycophancy.\n\n**D4 Adversarial robustness:** jailbreaking, prompt injection, data poisoning, AI security.\n\nThis form records your interest, expertise and availability. **Filling it in does not commit you to take part.** Almost all of the process is asynchronous and self-paced; the only fixed-time commitment is a single 30-minute call near the end, between 20 and 27 October. The full process and time commitment (about 2 hours 15 minutes in total, between 1 and 27 October) are explained in step 3.",
+    "intro": "We are researching how well the techniques available today can substantiate safety and compliance claims about general-purpose AI models, and how much weight expert judgement gives them. We are building an open panel of experts, technical and legal/governance, for a two-round structured expert judgement exercise (Delphi). There is no fixed cap on how many experts we take on in either track.\n\nThe study covers four domains:\n\n**D1 Model opacity:** inspecting and explaining why a model produced an output (interpretability, explainability).\n\n**D2 Data integrity:** bias in training data, and degradation from training on synthetic model outputs (model collapse).\n\n**D3 Normative competence:** machine ethics, theory of mind, AI personas and companions, sycophancy.\n\n**D4 Adversarial robustness:** jailbreaking, prompt injection, data poisoning, AI security.\n\nThis form records your interest, expertise and availability. **Filling it in does not commit you to take part.** Almost all of the process is asynchronous and self-paced; the only fixed-time commitment is a single 15-minute call near the end, between 20 and 27 October. The full process and time commitment (about 2 hours 15 minutes in total, between 1 and 27 October) are explained in step 3.",
     "estimatedMinutes": 5,
     "submitLabel": "Send my responses",
     "sheet": "Interest",
@@ -63,7 +63,7 @@ const FORMS = {
             "options": [
               {
                 "value": "published_research",
-                "label": "Published research in one of the four areas in step 2"
+                "label": "Published research in one of the four domains"
               },
               {
                 "value": "hands_on",
@@ -107,12 +107,6 @@ const FORMS = {
         "description": "The study covers four problem areas of general-purpose AI models, described at the start of this form.",
         "fields": [
           {
-            "id": "domain_info",
-            "type": "info",
-            "label": "The four domains",
-            "text": "**D1 Model opacity:** inspecting and explaining why a model produced an output (interpretability, explainability).\n\n**D2 Data integrity:** bias in training data, and degradation from training on synthetic model outputs (model collapse).\n\n**D3 Normative competence:** machine ethics, theory of mind, AI personas and companions, sycophancy.\n\n**D4 Adversarial robustness:** jailbreaking, prompt injection, data poisoning, AI security."
-          },
-          {
             "id": "primary_domain",
             "type": "radio",
             "label": "Which one domain are you best placed to assess?",
@@ -138,10 +132,11 @@ const FORMS = {
           },
           {
             "id": "familiarity",
-            "type": "matrix",
-            "label": "How familiar are you with each domain?",
+            "type": "ranking",
+            "label": "Rank the four domains by how familiar you are with each",
             "required": true,
-            "rows": [
+            "help": "Use the Up and Down buttons to order the domains from most familiar (top) to least familiar (bottom).",
+            "items": [
               {
                 "id": "D1",
                 "label": "D1 Model opacity"
@@ -158,30 +153,14 @@ const FORMS = {
                 "id": "D4",
                 "label": "D4 Adversarial robustness"
               }
-            ],
-            "columns": [
-              {
-                "value": "none",
-                "label": "Not familiar"
-              },
-              {
-                "value": "some",
-                "label": "Some familiarity"
-              },
-              {
-                "value": "good",
-                "label": "Good working knowledge"
-              },
-              {
-                "value": "expert",
-                "label": "Expert"
-              }
             ]
           },
           {
             "id": "other_domains",
             "type": "checkboxes",
             "label": "Any other domain you would be comfortable rating? (optional)",
+            "help": "The domain you chose above as your best fit is not shown here, since you've already selected it.",
+            "excludeField": "primary_domain",
             "options": [
               {
                 "value": "D1",
@@ -211,7 +190,7 @@ const FORMS = {
       {
         "id": "process",
         "title": "The process and your availability",
-        "description": "Please read how the study works before you answer. Almost everything below is asynchronous and self-paced, within fixed windows. The only fixed-time commitment is a single 30-minute call near the end (20-27 October) — that is all the availability grid below is for.",
+        "description": "Please read how the study works before you answer. Almost everything below is asynchronous and self-paced, within fixed windows. The only fixed-time commitment is a single 15-minute call near the end (20-27 October) — that is all the availability grid below is for.",
         "fields": [
           {
             "id": "process_info",
@@ -243,7 +222,7 @@ const FORMS = {
             "id": "city",
             "type": "text",
             "label": "What city will you be in between 20 and 27 October?",
-            "help": "This is just so we can schedule your 30-minute call at a reasonable time for you.",
+            "help": "This is just so we can schedule your 15-minute call at a reasonable time for you.",
             "required": true,
             "maxLength": 120,
             "showIf": {
@@ -254,9 +233,10 @@ const FORMS = {
           {
             "id": "availability",
             "type": "availability",
-            "label": "When could you join a 30-minute call between 20 and 27 October?",
+            "label": "When could you join a 15-minute call between 20 and 27 October?",
             "required": true,
-            "help": "This is just to get a general idea of your availability for a single 30-minute call near the end of the process — it is not a commitment and can always be changed later. Tick every half-hour slot, in your local time, that could work.",
+            "minSlots": 5,
+            "help": "This is just to get a general idea of your availability for a single 15-minute call near the end of the process — it is not a commitment and can always be changed later. Tick every half-hour slot, in your local time, that could work. Select at least 5 slots in total; you do not need to cover every day.",
             "dates": {
               "from": "2026-10-20",
               "to": "2026-10-27"
@@ -405,7 +385,7 @@ const FORMS = {
               },
               {
                 "value": "consent_recording",
-                "label": "I agree that the 30-minute call will be recorded and transcribed, and that the recording and transcript will be used only for this research."
+                "label": "I agree that the 15-minute call will be recorded and transcribed, and that the recording and transcript will be used only for this research."
               },
               {
                 "value": "consent_storage",

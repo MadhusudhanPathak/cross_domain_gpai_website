@@ -120,7 +120,8 @@ function validateFieldServer_(field, data, errors) {
       const min = field.minItems != null ? field.minItems : (required ? 1 : 0);
       if (arr.length < min) { errors[field.id] = 'Select at least ' + (min === 1 ? 'one option' : min + ' options') + '.'; return; }
       const allowed = {}; field.options.forEach(function (o) { allowed[o.value] = true; });
-      if (arr.some(function (x) { return !allowed[x]; })) errors[field.id] = 'Contains an invalid option.';
+      if (arr.some(function (x) { return !allowed[x]; })) { errors[field.id] = 'Contains an invalid option.'; return; }
+      if (field.excludeField && arr.indexOf(data[field.excludeField]) >= 0) errors[field.id] = 'Contains an option already chosen elsewhere.';
       return;
     }
     case 'checkbox': {
@@ -137,6 +138,14 @@ function validateFieldServer_(field, data, errors) {
       }
       return;
     }
+    case 'ranking': {
+      const arr = Array.isArray(v) ? v : [];
+      if (!required && arr.length === 0) return;
+      const ids = field.items.map(function (i) { return i.id; });
+      const isPermutation = arr.length === ids.length && ids.every(function (id) { return arr.indexOf(id) >= 0; }) && (new Set(arr)).size === ids.length;
+      if (!isPermutation) errors[field.id] = 'Rank every item for "' + field.label + '".';
+      return;
+    }
     case 'availability': {
       const obj = (v && typeof v === 'object') ? v : {};
       const validDates = {}; datesBetween_(field.dates.from, field.dates.to).forEach(function (d) { validDates[d] = true; });
@@ -149,7 +158,8 @@ function validateFieldServer_(field, data, errors) {
         for (const s of slots) if (!validSlots[s]) { errors[field.id] = 'Contains an invalid time slot.'; return; }
         total += slots.length;
       }
-      if (required && total < 1) errors[field.id] = 'Select at least one time slot.';
+      const min = field.minSlots != null ? field.minSlots : (required ? 1 : 0);
+      if (total < min) errors[field.id] = 'Select at least ' + (min === 1 ? 'one time slot' : min + ' time slots') + '.';
       return;
     }
     case 'consents': {
@@ -182,6 +192,7 @@ function columnsFor_(form) {
     s.fields.forEach(function (f) {
       if (f.type === 'info') return;
       if (f.type === 'matrix') f.rows.forEach(function (r) { cols.push(f.id + '_' + r.id); });
+      else if (f.type === 'ranking') f.items.forEach(function (it) { cols.push(f.id + '_' + it.id); });
       else if (f.type === 'availability') datesBetween_(f.dates.from, f.dates.to).forEach(function (d) { cols.push(f.id + '_' + d); });
       else if (f.type === 'consents') f.options.forEach(function (o) { cols.push(o.value); });
       else cols.push(f.id);
@@ -196,6 +207,10 @@ function flatten_(form, data) {
       const v = data[f.id];
       if (f.type === 'info') return;
       if (f.type === 'matrix') f.rows.forEach(function (r) { flat[f.id + '_' + r.id] = v && v[r.id]; });
+      else if (f.type === 'ranking') {
+        const arr = Array.isArray(v) ? v : [];
+        f.items.forEach(function (it) { const idx = arr.indexOf(it.id); flat[f.id + '_' + it.id] = idx >= 0 ? (idx + 1) : ''; });
+      }
       else if (f.type === 'availability') Object.keys(v || {}).forEach(function (d) { flat[f.id + '_' + d] = (v[d] || []).join(','); });
       else if (f.type === 'consents') f.options.forEach(function (o) { flat[o.value] = v && v[o.value] ? 'TRUE' : 'FALSE'; });
       else if (f.type === 'checkbox') flat[f.id] = v ? 'TRUE' : 'FALSE';
@@ -305,6 +320,14 @@ function fieldLabelValue_(field, data) {
       return field.rows.map(function (r) {
         const col = field.columns.filter(function (c) { return c.value === obj[r.id]; })[0];
         return r.label + ': ' + (col ? col.label : '(no answer)');
+      }).join('; ');
+    }
+    case 'ranking': {
+      const arr = Array.isArray(v) ? v : [];
+      if (!arr.length) return '(not ranked)';
+      return arr.map(function (id, idx) {
+        const it = field.items.filter(function (x) { return x.id === id; })[0];
+        return (idx + 1) + '. ' + (it ? it.label : id);
       }).join('; ');
     }
     case 'availability': {

@@ -17,6 +17,25 @@ export function DraftBanner({ onKeep, onDiscard }: { onKeep: () => void; onDisca
   );
 }
 
+/** Prominent, sticky bar showing overall completion of the form's required fields, independent of which step is shown. */
+export function CompletionBar({ percent }: { percent: number }) {
+  return (
+    <div className="completion-bar">
+      <span className="completion-bar__label">{percent}% complete</span>
+      <div
+        className="completion-bar__track"
+        role="progressbar"
+        aria-valuenow={percent}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label="Form completion"
+      >
+        <div className="completion-bar__fill" style={{ width: `${percent}%` }} />
+      </div>
+    </div>
+  );
+}
+
 export function StepProgress({ step, total, title }: { step: number; total: number; title: string }) {
   return (
     <>

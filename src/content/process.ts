@@ -8,7 +8,7 @@ export type Stage = {
   description: string;
 };
 
-// Minutes drive the proportional time bar (§12.5): 45 | 30+30 | 30.
+// Minutes drive the proportional time bar (§12.5): 45 | 30+30 | 15.
 export const stages: Stage[] = [
   {
     id: "round1",
@@ -41,15 +41,15 @@ export const stages: Stage[] = [
     id: "call",
     label: "Short call: reasons and overview",
     window: "20 - 27 Oct",
-    minutes: 30,
-    durationLabel: "30 min",
+    minutes: 15,
+    durationLabel: "15 min",
     mode: "Live call, recorded and transcribed",
-    description: "The only synchronous part of the process: a 30-minute call to discuss your reasons for any changes and to review the panel's overall responses. The call is recorded and transcribed for research use only.",
+    description: "The only synchronous part of the process: a 15-minute call to discuss your reasons for any changes and to review the panel's overall responses. The call is recorded and transcribed for research use only.",
   },
 ];
 
 export const totalMinutesLabel =
-  "About 2 hours 15 minutes in total, spread over three weeks. Only the final 30-minute call needs a fixed time; everything else is asynchronous but kept within its window.";
+  "About 2 hours in total, spread over three weeks. Only the final 15-minute call needs a fixed time; everything else is asynchronous but kept within its window.";
 
 export const processNote =
   "Round 2 opens only after every panellist has finished Round 1. Dates may shift by a day or two; the team will give notice in advance.";

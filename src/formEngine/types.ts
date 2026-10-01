@@ -16,6 +16,8 @@ export type Option = {
 
 export type MatrixRow = { id: string; label: string };
 
+export type RankingItem = { id: string; label: string };
+
 export type AvailabilitySlot = { value: string; label: string; description?: string };
 
 export type FieldBase = {
@@ -35,14 +37,17 @@ export type Field =
   | (FieldBase & { type: "textarea" })
   | (FieldBase & { type: "select"; options: Option[] })
   | (FieldBase & { type: "radio"; options: Option[] })
-  | (FieldBase & { type: "checkboxes"; options: Option[] })
+  | (FieldBase & { type: "checkboxes"; options: Option[]; /** Options whose value equals this other field's current value are hidden and stripped from the answer. */ excludeField?: string })
   | (FieldBase & { type: "checkbox" })
   | (FieldBase & { type: "matrix"; rows: MatrixRow[]; columns: Option[] })
+  | (FieldBase & { type: "ranking"; items: RankingItem[] })
   | (FieldBase & {
       type: "availability";
       /** Inclusive ISO date range, `YYYY-MM-DD`. */
       dates: { from: string; to: string };
       slots: AvailabilitySlot[];
+      /** Minimum total slots required across the whole range (not per day). Defaults to 1 when required. */
+      minSlots?: number;
     })
   | (FieldBase & { type: "consents"; options: Option[] })
   | (FieldBase & { type: "info"; text?: string; component?: string });

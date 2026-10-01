@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { applyDefaults } from "../../formEngine/defaults";
 import type { FieldErrors, FormData, FormDef } from "../../formEngine/types";
-import { hasErrors, validateForm, validateSection } from "../../formEngine/validate";
+import { hasErrors, validateField, validateForm, validateSection } from "../../formEngine/validate";
 import { firstSectionWithError, isVisible, stripHidden, visibleFields, visibleSections } from "../../formEngine/visibility";
 import { useFormState } from "../../hooks/useFormState";
 import { useFormStatus } from "../../hooks/useFormStatus";
@@ -14,7 +14,7 @@ import { MarkdownLite } from "../MarkdownLite";
 import { FieldRenderer } from "../fields/FieldRenderer";
 import { DraftBar } from "./DraftBar";
 import { ErrorSummary } from "./ErrorSummary";
-import { DraftBanner, FormClosed, Honeypot, StepProgress } from "./FormParts";
+import { CompletionBar, DraftBanner, FormClosed, Honeypot, StepProgress } from "./FormParts";
 
 const HONEYPOT_KEY = "__hp";
 
@@ -45,6 +45,13 @@ export function FormRenderer({ form }: { form: FormDef }) {
   const step = Math.max(0, Math.min(stepIndex, sections.length - 1));
   const currentSection = sections[step];
   const fields = useMemo(() => (currentSection ? visibleFields(currentSection, data) : []), [currentSection, data]);
+
+  const completionPercent = useMemo(() => {
+    const required = sections.flatMap((s) => visibleFields(s, data).filter((f) => f.required));
+    if (required.length === 0) return 100;
+    const done = required.filter((f) => !validateField(f, data)).length;
+    return Math.round((done / required.length) * 100);
+  }, [sections, data]);
 
   useEffect(() => {
     if (hasErrors(errors)) errorRef.current?.focus();
@@ -121,6 +128,8 @@ export function FormRenderer({ form }: { form: FormDef }) {
 
   return (
     <div className="container">
+      <CompletionBar percent={completionPercent} />
+
       <DraftBar formId={form.id} data={data} onRestore={restoreDraft} />
 
       {showDraftBanner && <DraftBanner onKeep={() => setShowDraftBanner(false)} onDiscard={discardLocalDraft} />}

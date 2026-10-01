@@ -49,7 +49,9 @@ export function validateField(field: Field, data: FormData): string | undefined 
       const min = field.minItems ?? (required ? 1 : 0);
       if (selected.length < min) return `Select at least ${min === 1 ? "one option" : `${min} options`}.`;
       const allowed = new Set<unknown>(field.options.map((o) => o.value));
-      return selected.every((x) => allowed.has(x)) ? undefined : "Contains an invalid option.";
+      if (!selected.every((x) => allowed.has(x))) return "Contains an invalid option.";
+      if (field.excludeField && selected.includes(data[field.excludeField])) return "Contains an option already chosen elsewhere.";
+      return undefined;
     }
     case "checkbox":
       return required && value !== true ? `You must check "${field.label}".` : undefined;
@@ -63,6 +65,13 @@ export function validateField(field: Field, data: FormData): string | undefined 
       }
       return undefined;
     }
+    case "ranking": {
+      const order: unknown[] = Array.isArray(value) ? value : [];
+      if (!required && order.length === 0) return undefined;
+      const ids = field.items.map((i) => i.id);
+      const isPermutation = order.length === ids.length && ids.every((id) => order.includes(id)) && new Set(order).size === ids.length;
+      return isPermutation ? undefined : `Rank every item for "${field.label}".`;
+    }
     case "availability": {
       const byDate = objectValue<unknown>(value);
       const validDates = new Set(datesBetween(field.dates.from, field.dates.to));
@@ -74,7 +83,8 @@ export function validateField(field: Field, data: FormData): string | undefined 
         if (slots.some((s) => !validSlots.has(s))) return "Contains an invalid time slot.";
         total += slots.length;
       }
-      return required && total < 1 ? "Select at least one time slot." : undefined;
+      const min = field.minSlots ?? (required ? 1 : 0);
+      return total < min ? `Select at least ${min === 1 ? "one time slot" : `${min} time slots`}.` : undefined;
     }
     case "consents": {
       const agreed = objectValue<unknown>(value);
