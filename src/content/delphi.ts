@@ -5,7 +5,7 @@
  */
 
 /** Link to the briefing pack (one page per technique, one per domain's legal anchors). Leave empty to show a placeholder notice. */
-export const briefingPackUrl = "https://drive.google.com/file/d/1URCdZSE-pTEbDB9i49hTA7gVI_2ER4MQ/view?usp=sharing";
+export const briefingPackUrl = "https://drive.google.com/file/d/1H2YL2407raHpF5mR8igbUgt3UXT2uEz6/view";
 
 export const referenceScenario =
   "A provider has placed a **closed-weight general-purpose AI model with systemic risk** on the EU market. The **AI Office** is assessing a compliance claim the provider has made under **Articles 53 and 55 of the AI Act**. The technical evaluation is carried out by an **independent expert appointed under Article 92**. Unless an item says otherwise, assume this expert has **the access the technique needs** to the version of the model actually deployed, and that the technique is applied **competently**.";
