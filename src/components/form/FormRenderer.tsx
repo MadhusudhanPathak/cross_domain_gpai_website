@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { applyDefaults } from "../../formEngine/defaults";
-import type { FieldErrors, FormData, FormDef } from "../../formEngine/types";
+import type { Field, FieldErrors, FormData, FormDef } from "../../formEngine/types";
 import { hasErrors, validateField, validateForm, validateSection } from "../../formEngine/validate";
 import { firstSectionWithError, isVisible, stripHidden, visibleFields, visibleSections } from "../../formEngine/visibility";
 import { useFormState } from "../../hooks/useFormState";
@@ -14,7 +14,7 @@ import { MarkdownLite } from "../MarkdownLite";
 import { FieldRenderer } from "../fields/FieldRenderer";
 import { DraftBar } from "./DraftBar";
 import { ErrorSummary } from "./ErrorSummary";
-import { CompletionBar, DraftBanner, FormClosed, Honeypot, StepProgress } from "./FormParts";
+import { CompletionBar, DraftBanner, FormClosed, Honeypot, StepNav, StepProgress } from "./FormParts";
 
 const HONEYPOT_KEY = "__hp";
 
@@ -46,16 +46,40 @@ export function FormRenderer({ form }: { form: FormDef }) {
   const currentSection = sections[step];
   const fields = useMemo(() => (currentSection ? visibleFields(currentSection, data) : []), [currentSection, data]);
 
+  const stepCounts = useMemo(
+    () =>
+      sections.map((s) => {
+        const required = visibleFields(s, data).filter((f) => f.required);
+        return {
+          title: s.title,
+          total: required.length,
+          done: required.filter((f) => !validateField(f, data)).length,
+          complete: !hasErrors(validateSection(s, data)),
+        };
+      }),
+    [sections, data]
+  );
+
   const completionPercent = useMemo(() => {
-    const required = sections.flatMap((s) => visibleFields(s, data).filter((f) => f.required));
-    if (required.length === 0) return 100;
-    const done = required.filter((f) => !validateField(f, data)).length;
-    return Math.round((done / required.length) * 100);
-  }, [sections, data]);
+    const total = stepCounts.reduce((n, s) => n + s.total, 0);
+    if (total === 0) return 100;
+    const done = stepCounts.reduce((n, s) => n + s.done, 0);
+    return Math.round((done / total) * 100);
+  }, [stepCounts]);
 
   useEffect(() => {
     if (hasErrors(errors)) errorRef.current?.focus();
   }, [errors]);
+
+  // A new step starts at the top of the page; long steps would otherwise open at the previous scroll position.
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    window.scrollTo(0, 0);
+  }, [step]);
 
   if (formStatus?.open === false) return <FormClosed message={formStatus.message} />;
   if (!currentSection) return null;
@@ -67,6 +91,15 @@ export function FormRenderer({ form }: { form: FormDef }) {
     if (idx >= 0) setStepIndex(idx);
     setErrors(fieldErrors);
   }
+
+  // Fields after the section's gate field stay disabled until the gate is answered validly.
+  const visibleInSection = currentSection.fields.filter((field) => isVisible(field.showIf, data));
+  const gate = currentSection.gateField ? visibleInSection.find((f) => f.id === currentSection.gateField) : undefined;
+  const gateCut = gate ? visibleInSection.indexOf(gate) + 1 : visibleInSection.length;
+  const gateOpen = !gate || !validateField(gate, data);
+  const renderField = (field: Field) => (
+    <FieldRenderer key={field.id} field={field} data={data} setField={setField} error={errors[field.id]} />
+  );
 
   function goNext() {
     const sectionErrors = validateSection(currentSection, data);
@@ -139,6 +172,17 @@ export function FormRenderer({ form }: { form: FormDef }) {
 
       <StepProgress step={step} total={sections.length} title={currentSection.title} />
 
+      {form.stepNav && (
+        <StepNav
+          items={stepCounts.map((s, i) => ({ ...s, reachable: stepCounts.slice(0, i).every((prev) => prev.complete) }))}
+          current={step}
+          onSelect={(i) => {
+            setErrors({});
+            setStepIndex(i);
+          }}
+        />
+      )}
+
       {currentSection.description && <p className="field__help">{currentSection.description}</p>}
 
       <ErrorSummary ref={errorRef} errors={errors} fields={fields} />
@@ -156,10 +200,19 @@ export function FormRenderer({ form }: { form: FormDef }) {
           else goNext();
         }}
       >
-        {currentSection.fields
-          .filter((field) => isVisible(field.showIf, data))
-          .map((field) => (
-            <FieldRenderer key={field.id} field={field} data={data} setField={setField} error={errors[field.id]} />
+        {visibleInSection.slice(0, gateCut).map(renderField)}
+        {gateCut < visibleInSection.length &&
+          (gateOpen ? (
+            visibleInSection.slice(gateCut).map(renderField)
+          ) : (
+            <>
+              <p className="alert gate-notice" role="status">
+                Complete "{gate?.label}" above to unlock the remaining questions on this page.
+              </p>
+              <fieldset className="gate-locked" disabled>
+                {visibleInSection.slice(gateCut).map(renderField)}
+              </fieldset>
+            </>
           ))}
 
         <Honeypot value={optionalString(data[HONEYPOT_KEY]) ?? ""} onChange={(v) => setField(HONEYPOT_KEY, v)} />

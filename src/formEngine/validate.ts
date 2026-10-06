@@ -1,5 +1,6 @@
 import { datesBetween } from "../utils/dates";
 import { isRecord } from "../utils/guards";
+import { allocationError, asAllocation, asEstimate, estimateError } from "./items";
 import type { Field, FieldErrors, FormData, FormDef, Section } from "./types";
 import { visibleFields, visibleSections, isVisible } from "./visibility";
 
@@ -90,6 +91,10 @@ export function validateField(field: Field, data: FormData): string | undefined 
       const agreed = objectValue<unknown>(value);
       return field.options.every((o) => agreed[o.value]) ? undefined : "You must agree to every item to continue.";
     }
+    case "estimate":
+      return estimateError(asEstimate(value), required);
+    case "allocation":
+      return allocationError(asAllocation(value, field.codes), required);
     case "info":
       return undefined;
   }

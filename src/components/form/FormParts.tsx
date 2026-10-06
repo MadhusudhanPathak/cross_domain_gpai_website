@@ -49,6 +49,38 @@ export function StepProgress({ step, total, title }: { step: number; total: numb
   );
 }
 
+export type StepNavItem = { title: string; done: number; total: number; reachable: boolean };
+
+/** Step bar (forms with `stepNav`) with a count of completed required questions per step. Unreachable steps are disabled. */
+export function StepNav({ items, current, onSelect }: { items: StepNavItem[]; current: number; onSelect: (index: number) => void }) {
+  return (
+    <nav className="step-nav" aria-label="Form steps">
+      <ol>
+        {items.map((item, i) => (
+          <li key={i}>
+            <button
+              type="button"
+              className={`step-nav__button${item.total > 0 && item.done === item.total ? " step-nav__button--done" : ""}`}
+              aria-current={i === current ? "step" : undefined}
+              disabled={!item.reachable && i !== current}
+              title={item.reachable ? undefined : "Complete the earlier steps first"}
+              onClick={() => onSelect(i)}
+            >
+              {item.title}
+              {item.total > 0 && (
+                <span className="step-nav__count">
+                  {" "}
+                  {item.done}/{item.total}
+                </span>
+              )}
+            </button>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
+
 /** Off-screen input that people never see; bots that fill it are silently discarded by the server. */
 export function Honeypot({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   return (

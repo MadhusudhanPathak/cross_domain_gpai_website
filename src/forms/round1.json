@@ -1,0 +1,677 @@
+{
+  "id": "round1",
+  "version": "1.0.0",
+  "title": "Expert elicitation on evidence and verification for general-purpose AI",
+  "intro": "Round 1 questionnaire: 40 items in four domain blocks. It takes about a focused sittings of 40–50 minutes, and you may pause at any time: your answers are kept in this browser, and \"Save and continue later\" lets you resume on another device. Best completed on a computer.",
+  "estimatedMinutes": 45,
+  "submitLabel": "Send my Round 1 answers",
+  "sheet": "Round1",
+  "access": "open",
+  "doneMessage": "Thank you for completing Round 1. Round 2 opens once Round 1 has closed; we will email you when it does. In Round 2 you will see both panels' anonymised Round 1 results and can revise or confirm your answers.",
+  "stepNav": true,
+  "sections": [
+    {
+      "id": "about",
+      "title": "About you",
+      "fields": [
+        {
+          "id": "full_name",
+          "type": "text",
+          "label": "Full name",
+          "required": true,
+          "maxLength": 120
+        },
+        {
+          "id": "email",
+          "type": "email",
+          "label": "Email",
+          "help": "Use the same address you gave in the expression of interest. We use it to contact you about Round 2 and, if you ask, to send you a copy of your answers. The analysis data uses a pseudonymous ID instead of your name or email.",
+          "required": true
+        },
+        {
+          "id": "panel",
+          "type": "radio",
+          "label": "Which panel are you taking part in?",
+          "required": true,
+          "options": [
+            {
+              "value": "technical",
+              "label": "Technical panel",
+              "description": "AI safety, machine learning, evaluation, interpretability, security"
+            },
+            {
+              "value": "legal",
+              "label": "Legal panel",
+              "description": "AI law, regulation, governance, compliance, standards"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "howto",
+      "title": "How to answer",
+      "fields": [
+        {
+          "id": "howto_instructions",
+          "type": "info",
+          "label": "How to answer",
+          "component": "DelphiInstructions"
+        }
+      ]
+    },
+    {
+      "id": "D1",
+      "title": "D1 Model opacity",
+      "gateField": "D1-01",
+      "fields": [
+        {
+          "id": "D1_scenario",
+          "type": "info",
+          "label": "Reference scenario",
+          "component": "ReferenceScenario"
+        },
+        {
+          "id": "D1_anchor",
+          "type": "info",
+          "label": "Anchor claim",
+          "variant": "callout",
+          "text": "**Anchor claim (D1).** **A mechanistic account offered in the provider's documentation correctly explains a specified safety-relevant behaviour of the deployed model (for example, how the model comes to refuse a category of dangerous requests).**"
+        },
+        {
+          "id": "D1_glossary",
+          "type": "info",
+          "label": "Glossary",
+          "component": "Glossary"
+        },
+        {
+          "id": "D1-01",
+          "type": "allocation",
+          "label": "Sources of limitation",
+          "required": true,
+          "question": "Allocate 100% across the codes below in proportion to how much each currently limits the verification of the D1 anchor claim in the reference scenario.",
+          "codes": [
+            {
+              "value": "L",
+              "code": "L",
+              "label": "Legal entitlement missing",
+              "description": "No legal provision gives the relevant actor the access the evidence requires."
+            },
+            {
+              "value": "V",
+              "code": "V",
+              "label": "Provider cooperation",
+              "description": "The access exists only on terms the provider agrees to."
+            },
+            {
+              "value": "T",
+              "code": "T",
+              "label": "Technical validation",
+              "description": "The method is not yet validated for this use, scale or setting."
+            },
+            {
+              "value": "E",
+              "code": "E",
+              "label": "Narrower evidence",
+              "description": "Even when well executed, the method establishes something narrower than, or different from, the claim."
+            },
+            {
+              "value": "N",
+              "code": "N",
+              "label": "Under-specified criterion",
+              "description": "The standard the claim must meet (e.g. what counts as fair or appropriate) is not sufficiently specified or agreed."
+            },
+            {
+              "value": "O",
+              "code": "O",
+              "label": "Operational capacity",
+              "description": "The bodies involved lack the resources, expertise or procedures to verify in practice."
+            },
+            {
+              "value": "none",
+              "code": "Ø",
+              "label": "Not materially limited",
+              "description": "The claim can be adequately verified today."
+            }
+          ]
+        },
+        {
+          "id": "D1-02",
+          "type": "estimate",
+          "label": "Sparse autoencoders (a)",
+          "required": true,
+          "stem": "**Evidence.** The expert trains sparse autoencoders on activations from the deployed checkpoint and identifies a feature F whose activation tracks behaviour B. Steering or ablating F changes B in the expected direction on held-out prompts.\n\n**Claim.** Feature F is causally involved in producing behaviour B in the deployed model.",
+          "question": "How many of 100 reviewers would accept that the evidence adequately supports the claim?"
+        },
+        {
+          "id": "D1-03",
+          "type": "estimate",
+          "label": "Sparse autoencoders (b)",
+          "required": true,
+          "stem": "**Evidence.** As in D1-02, applied across the model to search for features associated with a dangerous capability C. No feature associated with C is found.\n\n**Inference.** Capability C is absent from the deployed model.",
+          "question": "How many of 100 reviewers would accept that this inference is justified?"
+        },
+        {
+          "id": "D1-04",
+          "type": "estimate",
+          "label": "Automated circuit discovery (a)",
+          "required": true,
+          "stem": "**Evidence.** The expert runs automated circuit discovery on the deployed model for behaviour B under a chosen behavioural metric M. It recovers a subgraph S; ablating components outside S leaves B largely intact on M. (Published validation of the method is limited to small models such as GPT-2 Small.)\n\n**Claim.** Subgraph S is sufficient to implement behaviour B, as measured by M, in the deployed model.",
+          "question": "How many of 100 reviewers would accept that the evidence adequately supports the claim?"
+        },
+        {
+          "id": "D1-05",
+          "type": "estimate",
+          "label": "Automated circuit discovery (b)",
+          "required": true,
+          "stem": "**Evidence.** As in D1-04.\n\n**Inference.** S is the complete implementation of B, so that an intervention removing S would remove B, including under metrics other than M.",
+          "question": "How many of 100 reviewers would accept that this inference is justified?"
+        },
+        {
+          "id": "D1-06",
+          "type": "estimate",
+          "label": "Lens methods (a)",
+          "required": true,
+          "stem": "**Evidence.** The expert applies a tuned lens to the deployed checkpoint. From an intermediate layer onwards, the lens readout predicts the token the model eventually outputs for a refused request.\n\n**Claim.** The model's intermediate states carry predictive information about the eventual output from that layer onwards.",
+          "question": "How many of 100 reviewers would accept that the evidence adequately supports the claim?"
+        },
+        {
+          "id": "D1-07",
+          "type": "estimate",
+          "label": "Lens methods (b)",
+          "required": true,
+          "stem": "**Evidence.** As in D1-06.\n\n**Inference.** The sequence of lens readouts faithfully describes the reasoning by which the model reached its output, and can be presented as an explanation of that output.",
+          "question": "How many of 100 reviewers would accept that this inference is justified?"
+        },
+        {
+          "id": "D1-08",
+          "type": "estimate",
+          "label": "Access to evidence",
+          "required": true,
+          "stem": "Under the AI Act as currently in force (in particular Arts. 91–92), the Article 92 expert needs **activation-level access to the deployed checkpoint and the ability to intervene on internal components** to run the D1 techniques.",
+          "question": "How many of 100 reviewers would conclude that the expert can obtain this access **as of right**, rather than only on terms the provider agrees to?"
+        },
+        {
+          "id": "D1-09",
+          "type": "estimate",
+          "label": "Access entitlement",
+          "required": true,
+          "stem": "Suppose a binding **controlled-evaluator-access entitlement** existed. The appointed expert receives the access in D1-08 in a secure environment, analysis artefacts are preserved for re-analysis, and results can be shared with the AI Office and, under confidentiality, with a qualified challenger.",
+          "question": "With this entitlement **alone**, how many of 100 reviewers would judge the D1 anchor claim **adequately verifiable**?"
+        },
+        {
+          "id": "D1-10",
+          "type": "estimate",
+          "label": "Access entitlement plus disclosure",
+          "required": true,
+          "stem": "Suppose that, **in addition** to the entitlement in D1-09, the provider must submit a **failure-visibility statement** for every interpretability finding it relies on. The statement gives the explanatory target, the method's known failure modes and whether an invalid result would be recognisable as invalid, the alternative specifications tested (e.g. seeds, metrics), and the exact checkpoint analysed.",
+          "question": "How many of 100 reviewers would now judge the D1 anchor claim **adequately verifiable**?"
+        }
+      ]
+    },
+    {
+      "id": "D2",
+      "title": "D2 Data integrity",
+      "gateField": "D2-01",
+      "fields": [
+        {
+          "id": "D2_scenario",
+          "type": "info",
+          "label": "Reference scenario",
+          "component": "ReferenceScenario"
+        },
+        {
+          "id": "D2_anchor",
+          "type": "info",
+          "label": "Anchor claim",
+          "variant": "callout",
+          "text": "**Anchor claim (D2).** **The provider's training-data account (Art. 53(1)(a)–(b), Annexes XI–XII) adequately supports its stated claims that (i) identified bias risks in the training data were mitigated and (ii) its use of synthetic data has not materially degraded the model's distributional coverage.**"
+        },
+        {
+          "id": "D2_glossary",
+          "type": "info",
+          "label": "Glossary",
+          "component": "Glossary"
+        },
+        {
+          "id": "D2-01",
+          "type": "allocation",
+          "label": "Sources of limitation",
+          "required": true,
+          "question": "Allocate 100% across the codes in proportion to how much each currently limits the verification of the D2 anchor claim in the reference scenario.",
+          "codes": [
+            {
+              "value": "L",
+              "code": "L",
+              "label": "Legal entitlement missing",
+              "description": "No legal provision gives the relevant actor the access the evidence requires."
+            },
+            {
+              "value": "V",
+              "code": "V",
+              "label": "Provider cooperation",
+              "description": "The access exists only on terms the provider agrees to."
+            },
+            {
+              "value": "T",
+              "code": "T",
+              "label": "Technical validation",
+              "description": "The method is not yet validated for this use, scale or setting."
+            },
+            {
+              "value": "E",
+              "code": "E",
+              "label": "Narrower evidence",
+              "description": "Even when well executed, the method establishes something narrower than, or different from, the claim."
+            },
+            {
+              "value": "N",
+              "code": "N",
+              "label": "Under-specified criterion",
+              "description": "The standard the claim must meet (e.g. what counts as fair or appropriate) is not sufficiently specified or agreed."
+            },
+            {
+              "value": "O",
+              "code": "O",
+              "label": "Operational capacity",
+              "description": "The bodies involved lack the resources, expertise or procedures to verify in practice."
+            },
+            {
+              "value": "none",
+              "code": "Ø",
+              "label": "Not materially limited",
+              "description": "The claim can be adequately verified today."
+            }
+          ]
+        },
+        {
+          "id": "D2-02",
+          "type": "estimate",
+          "label": "Adversarial debiasing (a)",
+          "required": true,
+          "stem": "**Evidence.** The provider applied adversarial debiasing for a named protected attribute A during fine-tuning. The expert confirms that A cannot be recovered above chance from the model's representations, and that A-related output disparity on a specified set of downstream tasks fell relative to the pre-mitigation checkpoint.\n\n**Claim.** The mitigation reduced A-related disparity on the evaluated tasks.",
+          "question": "How many of 100 reviewers would accept that the evidence adequately supports the claim?"
+        },
+        {
+          "id": "D2-03",
+          "type": "estimate",
+          "label": "Adversarial debiasing (b)",
+          "required": true,
+          "stem": "**Evidence.** As in D2-02.\n\n**Inference.** The model does not encode unlawful proxy discrimination, including for protected attributes other than A and in open-ended generation.",
+          "question": "How many of 100 reviewers would accept that this inference is justified?"
+        },
+        {
+          "id": "D2-04",
+          "type": "estimate",
+          "label": "Dynamic adversarial data collection (a)",
+          "required": true,
+          "stem": "**Evidence.** The provider ran several rounds of dynamic adversarial data collection for a target class of difficult content, in which annotators wrote examples that fooled the current model. Round-level records are available. On a held-out adversarial test set, the final model outperforms a model trained on static data.\n\n**Claim.** The model's performance on difficult cases of the target class improved.",
+          "question": "How many of 100 reviewers would accept that the evidence adequately supports the claim?"
+        },
+        {
+          "id": "D2-05",
+          "type": "estimate",
+          "label": "Dynamic adversarial data collection (b)",
+          "required": true,
+          "stem": "**Evidence.** As in D2-04.\n\n**Inference.** Because the process preserves rare and difficult cases, the provider's data pipeline protects future model generations against recursive degradation (model collapse) from synthetic data.",
+          "question": "How many of 100 reviewers would accept that this inference is justified?"
+        },
+        {
+          "id": "D2-06",
+          "type": "estimate",
+          "label": "Alignment pretraining (a)",
+          "required": true,
+          "stem": "**Evidence.** The provider used conditional pretraining: each training document was prefixed with a control token derived from a preference-scoring function. The expert has the scoring function and corpus statistics, and finds that content flagged by the scoring function occurs less often in model outputs than in a standard-pretraining baseline.\n\n**Claim.** The pretraining objective reduced the rate of content that the scoring function flags.",
+          "question": "How many of 100 reviewers would accept that the evidence adequately supports the claim?"
+        },
+        {
+          "id": "D2-07",
+          "type": "estimate",
+          "label": "Alignment pretraining (b)",
+          "required": true,
+          "stem": "**Evidence.** As in D2-06.\n\n**Inference.** Bias risks in the training data were mitigated in the sense relevant to non-discrimination, i.e. the scoring function is a valid measure of that property.",
+          "question": "How many of 100 reviewers would accept that this inference is justified?"
+        },
+        {
+          "id": "D2-08",
+          "type": "estimate",
+          "label": "Access to evidence",
+          "required": true,
+          "stem": "Under the AI Act as currently in force (in particular Arts. 91–92), the Article 92 expert needs **data-regime records**: provenance and curation records, synthetic/real data proportions across training stages, samples of retained training data, scoring and filtering functions, and successive checkpoints.",
+          "question": "How many of 100 reviewers would conclude that the expert can obtain these **as of right**, rather than only on terms the provider agrees to?"
+        },
+        {
+          "id": "D2-09",
+          "type": "estimate",
+          "label": "Access entitlement",
+          "required": true,
+          "stem": "Suppose a binding **controlled-evaluator-access entitlement** existed. The appointed expert receives the records in D2-08 in a secure environment, artefacts are preserved for re-analysis, and results can be shared with the AI Office and, under confidentiality, with a qualified challenger.",
+          "question": "With this entitlement **alone**, how many of 100 reviewers would judge the D2 anchor claim **adequately verifiable**?"
+        },
+        {
+          "id": "D2-10",
+          "type": "estimate",
+          "label": "Access entitlement plus disclosure",
+          "required": true,
+          "stem": "Suppose that, **in addition** to the entitlement in D2-09, the provider must keep and submit a **data-regime and retention record**. It is a versioned record of data origin, the synthetic/real mixture at each training generation, retained real data, the filtering and scoring functions used, and longitudinal evaluations of distributional coverage and subgroup outcomes across successive checkpoints.",
+          "question": "How many of 100 reviewers would now judge the D2 anchor claim **adequately verifiable**?"
+        }
+      ]
+    },
+    {
+      "id": "D3",
+      "title": "D3 Normative competence",
+      "gateField": "D3-01",
+      "fields": [
+        {
+          "id": "D3_scenario",
+          "type": "info",
+          "label": "Reference scenario",
+          "component": "ReferenceScenario"
+        },
+        {
+          "id": "D3_anchor",
+          "type": "info",
+          "label": "Anchor claim",
+          "variant": "callout",
+          "text": "**Anchor claim (D3).** **The provider's claimed mitigation of a specified normative risk (for example, sycophantic validation of a user's harmful beliefs in sensitive conversations) is supported by evidence for that risk scenario.**"
+        },
+        {
+          "id": "D3_glossary",
+          "type": "info",
+          "label": "Glossary",
+          "component": "Glossary"
+        },
+        {
+          "id": "D3-01",
+          "type": "allocation",
+          "label": "Sources of limitation",
+          "required": true,
+          "question": "Allocate 100% across the codes in proportion to how much each currently limits the verification of the D3 anchor claim in the reference scenario.",
+          "codes": [
+            {
+              "value": "L",
+              "code": "L",
+              "label": "Legal entitlement missing",
+              "description": "No legal provision gives the relevant actor the access the evidence requires."
+            },
+            {
+              "value": "V",
+              "code": "V",
+              "label": "Provider cooperation",
+              "description": "The access exists only on terms the provider agrees to."
+            },
+            {
+              "value": "T",
+              "code": "T",
+              "label": "Technical validation",
+              "description": "The method is not yet validated for this use, scale or setting."
+            },
+            {
+              "value": "E",
+              "code": "E",
+              "label": "Narrower evidence",
+              "description": "Even when well executed, the method establishes something narrower than, or different from, the claim."
+            },
+            {
+              "value": "N",
+              "code": "N",
+              "label": "Under-specified criterion",
+              "description": "The standard the claim must meet (e.g. what counts as fair or appropriate) is not sufficiently specified or agreed."
+            },
+            {
+              "value": "O",
+              "code": "O",
+              "label": "Operational capacity",
+              "description": "The bodies involved lack the resources, expertise or procedures to verify in practice."
+            },
+            {
+              "value": "none",
+              "code": "Ø",
+              "label": "Not materially limited",
+              "description": "The claim can be adequately verified today."
+            }
+          ]
+        },
+        {
+          "id": "D3-02",
+          "type": "estimate",
+          "label": "Constitutional AI (a)",
+          "required": true,
+          "stem": "**Evidence.** The provider trained the model with Constitutional AI and discloses its constitution, which includes principles against validating harmful beliefs. Using independently designed scenarios for the risk, the expert finds that the model's responses conform to those principles at a high rate.\n\n**Claim.** In the evaluated scenarios, the model's behaviour conforms to the stated principles.",
+          "question": "How many of 100 reviewers would accept that the evidence adequately supports the claim?"
+        },
+        {
+          "id": "D3-03",
+          "type": "estimate",
+          "label": "Constitutional AI (b)",
+          "required": true,
+          "stem": "**Evidence.** As in D3-02.\n\n**Inference.** The model will respond appropriately in unanticipated situations within the same risk domain (for example, rephrased requests or unfamiliar, vulnerable users), i.e. it has acquired the relevant competence rather than scenario-specific conformity.",
+          "question": "How many of 100 reviewers would accept that this inference is justified?"
+        },
+        {
+          "id": "D3-04",
+          "type": "estimate",
+          "label": "AI safety via debate (a)",
+          "required": true,
+          "stem": "**Evidence.** On a set of disputed questions relevant to the risk scenario, each with an independently established reference answer, judges who read debate transcripts between two model instances reached the reference answer more often than judges given a single-advocate baseline.\n\n**Claim.** On these questions, debate improves judges' accuracy.",
+          "question": "How many of 100 reviewers would accept that the evidence adequately supports the claim?"
+        },
+        {
+          "id": "D3-05",
+          "type": "estimate",
+          "label": "AI safety via debate (b)",
+          "required": true,
+          "stem": "**Evidence.** As in D3-04.\n\n**Inference.** On a contested normative question with **no** reference answer, the position that wins the debate can be treated as a justified resolution of that question.",
+          "question": "How many of 100 reviewers would accept that this inference is justified?"
+        },
+        {
+          "id": "D3-06",
+          "type": "estimate",
+          "label": "Inverse reinforcement learning (a)",
+          "required": true,
+          "stem": "**Evidence.** The provider applied inverse reinforcement learning to human demonstrations of desirable conduct in the risk scenario. The expert confirms that the recovered reward function predicts held-out demonstrations well under the stated modelling assumptions.\n\n**Claim.** Under the stated assumptions, the recovered reward is consistent with the demonstrated conduct and predicts held-out behaviour.",
+          "question": "How many of 100 reviewers would accept that the evidence adequately supports the claim?"
+        },
+        {
+          "id": "D3-07",
+          "type": "estimate",
+          "label": "Inverse reinforcement learning (b)",
+          "required": true,
+          "stem": "**Evidence.** As in D3-06.\n\n**Inference.** The recovered reward identifies the values the demonstrators actually hold, and can therefore serve as evidence of the values the model was aligned to.",
+          "question": "How many of 100 reviewers would accept that this inference is justified?"
+        },
+        {
+          "id": "D3-08",
+          "type": "estimate",
+          "label": "Access to evidence",
+          "required": true,
+          "stem": "Under the AI Act as currently in force (in particular Arts. 91–92), the Article 92 expert needs **the complete principle set and feedback/training records, the protocols of any judge- or debate-based evaluation, and samples of deployment interactions for the risk scenario**.",
+          "question": "How many of 100 reviewers would conclude that the expert can obtain these **as of right**, rather than only on terms the provider agrees to?"
+        },
+        {
+          "id": "D3-09",
+          "type": "estimate",
+          "label": "Access entitlement",
+          "required": true,
+          "stem": "Suppose a binding **controlled-evaluator-access entitlement** existed. The appointed expert receives the material in D3-08 in a secure environment, artefacts are preserved for re-analysis, and results can be shared with the AI Office and, under confidentiality, with a qualified challenger.",
+          "question": "With this entitlement **alone**, how many of 100 reviewers would judge the D3 anchor claim **adequately verifiable**?"
+        },
+        {
+          "id": "D3-10",
+          "type": "estimate",
+          "label": "Access entitlement plus disclosure",
+          "required": true,
+          "stem": "Suppose that, **in addition** to the entitlement in D3-09, the provider must submit a **normative-specification disclosure**. It states the principles or reference criteria used for the risk scenario, how conflicts between principles were resolved, which scenarios and user populations were tested, and a procedure through which qualified parties can challenge the specification.",
+          "question": "How many of 100 reviewers would now judge the D3 anchor claim **adequately verifiable**?"
+        }
+      ]
+    },
+    {
+      "id": "D4",
+      "title": "D4 Adversarial robustness",
+      "gateField": "D4-01",
+      "fields": [
+        {
+          "id": "D4_scenario",
+          "type": "info",
+          "label": "Reference scenario",
+          "component": "ReferenceScenario"
+        },
+        {
+          "id": "D4_anchor",
+          "type": "info",
+          "label": "Anchor claim",
+          "variant": "callout",
+          "text": "**Anchor claim (D4).** **The provider's jailbreak mitigation reduces the identified risk (universal jailbreaks that elicit serious CBRN uplift) under the stated conditions, for the configuration actually deployed.**"
+        },
+        {
+          "id": "D4_glossary",
+          "type": "info",
+          "label": "Glossary",
+          "component": "Glossary"
+        },
+        {
+          "id": "D4-01",
+          "type": "allocation",
+          "label": "Sources of limitation",
+          "required": true,
+          "question": "Allocate 100% across the codes in proportion to how much each currently limits the verification of the D4 anchor claim in the reference scenario.",
+          "codes": [
+            {
+              "value": "L",
+              "code": "L",
+              "label": "Legal entitlement missing",
+              "description": "No legal provision gives the relevant actor the access the evidence requires."
+            },
+            {
+              "value": "V",
+              "code": "V",
+              "label": "Provider cooperation",
+              "description": "The access exists only on terms the provider agrees to."
+            },
+            {
+              "value": "T",
+              "code": "T",
+              "label": "Technical validation",
+              "description": "The method is not yet validated for this use, scale or setting."
+            },
+            {
+              "value": "E",
+              "code": "E",
+              "label": "Narrower evidence",
+              "description": "Even when well executed, the method establishes something narrower than, or different from, the claim."
+            },
+            {
+              "value": "N",
+              "code": "N",
+              "label": "Under-specified criterion",
+              "description": "The standard the claim must meet (e.g. what counts as fair or appropriate) is not sufficiently specified or agreed."
+            },
+            {
+              "value": "O",
+              "code": "O",
+              "label": "Operational capacity",
+              "description": "The bodies involved lack the resources, expertise or procedures to verify in practice."
+            },
+            {
+              "value": "none",
+              "code": "Ø",
+              "label": "Not materially limited",
+              "description": "The claim can be adequately verified today."
+            }
+          ]
+        },
+        {
+          "id": "D4-02",
+          "type": "estimate",
+          "label": "Constitutional classifiers (a)",
+          "required": true,
+          "stem": "**Evidence.** The deployed configuration includes input/output (exchange) classifiers trained from a constitution. Under a declared protocol (attacker access, budget, grader, success threshold, date), the expert's red team runs extended adaptive attacks against that exact configuration and finds no universal jailbreak meeting the success criterion.\n\n**Claim.** Under the declared conditions, the deployed configuration resisted universal jailbreaks for the targeted CBRN categories.",
+          "question": "How many of 100 reviewers would accept that the evidence adequately supports the claim?"
+        },
+        {
+          "id": "D4-03",
+          "type": "estimate",
+          "label": "Constitutional classifiers (b)",
+          "required": true,
+          "stem": "**Evidence.** As in D4-02.\n\n**Inference.** No cost-effective universal jailbreak exists for this configuration.",
+          "question": "How many of 100 reviewers would accept that this inference is justified?"
+        },
+        {
+          "id": "D4-04",
+          "type": "estimate",
+          "label": "Circuit breakers (a)",
+          "required": true,
+          "stem": "**Evidence.** The provider trained circuit breakers into the model. Using attacks adapted to the defence, including attacks designed with knowledge of how it works, the expert finds harmful-completion rates substantially lower than for the same model without circuit breakers.\n\n**Claim.** Circuit breakers reduce harmful-completion rates against the tested adaptive attacks.",
+          "question": "How many of 100 reviewers would accept that the evidence adequately supports the claim?"
+        },
+        {
+          "id": "D4-05",
+          "type": "estimate",
+          "label": "Circuit breakers (b)",
+          "required": true,
+          "stem": "**Evidence.** As in D4-04.\n\n**Inference.** Suppressing the targeted internal representations has removed the harmful capability, rather than redirecting how it can be expressed.",
+          "question": "How many of 100 reviewers would accept that this inference is justified?"
+        },
+        {
+          "id": "D4-06",
+          "type": "estimate",
+          "label": "Process reward modelling (a)",
+          "required": true,
+          "stem": "**Evidence.** The provider trained the model with a process reward model that includes safety criteria for each reasoning step. On the tested prompts, the expert observes far fewer written reasoning traces in which the model reasons its way towards complying with a harmful request.\n\n**Claim.** On the tested prompts, the model's written reasoning towards harmful compliance has decreased.",
+          "question": "How many of 100 reviewers would accept that the evidence adequately supports the claim?"
+        },
+        {
+          "id": "D4-07",
+          "type": "estimate",
+          "label": "Process reward modelling (b)",
+          "required": true,
+          "stem": "**Evidence.** As in D4-06.\n\n**Inference.** The cleaner reasoning traces show that the model no longer has an unsafe policy, rather than that it has learned to keep that policy out of its written reasoning.",
+          "question": "How many of 100 reviewers would accept that this inference is justified?"
+        },
+        {
+          "id": "D4-08",
+          "type": "estimate",
+          "label": "Access to evidence",
+          "required": true,
+          "stem": "Under the AI Act as currently in force (in particular Arts. 91–92), the Article 92 expert needs **the deployed guarded configuration** (model version, classifier thresholds, system prompt, tools), **unrestricted adaptive-attack access with knowledge of the defence design**, and **the provider's own red-teaming and grading records**.",
+          "question": "How many of 100 reviewers would conclude that the expert can obtain these **as of right**, rather than only on terms the provider agrees to?"
+        },
+        {
+          "id": "D4-09",
+          "type": "estimate",
+          "label": "Access entitlement",
+          "required": true,
+          "stem": "Suppose a binding **controlled-evaluator-access entitlement** existed. The appointed expert receives the access and records in D4-08 in a secure environment, configurations and graded outcomes are preserved for re-analysis, and results can be shared with the AI Office and, under confidentiality, with a qualified challenger.",
+          "question": "With this entitlement **alone**, how many of 100 reviewers would judge the D4 anchor claim **adequately verifiable**?"
+        },
+        {
+          "id": "D4-10",
+          "type": "estimate",
+          "label": "Access entitlement plus disclosure",
+          "required": true,
+          "stem": "Suppose that, **in addition** to the entitlement in D4-09, every robustness claim must be accompanied by a **declared threat model**. It states the attacker's access tier (query, fine-tuning or weights), the attacker's knowledge of the defence, budget, success criterion and grader, the configuration and date tested, and whether attacks were adapted to the defence. It also includes a duty to re-test after any material change to the configuration.",
+          "question": "How many of 100 reviewers would now judge the D4 anchor claim **adequately verifiable**?"
+        }
+      ]
+    },
+    {
+      "id": "finish",
+      "title": "Check and send",
+      "fields": [
+        {
+          "id": "finish_info",
+          "type": "info",
+          "label": "Before you send",
+          "text": "You have reached the end of Round 1. You can use the steps above to go back and review any domain before you send.\n\n**After you send, your Round 1 answers are final.** If you need to correct something afterwards, contact the research team."
+        },
+        {
+          "id": "copy_requested",
+          "type": "checkbox",
+          "label": "Send me a copy of my answers by email"
+        }
+      ]
+    }
+  ]
+}

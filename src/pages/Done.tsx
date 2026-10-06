@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { ContactLink } from "../components/ContactLink";
+import { MarkdownLite } from "../components/MarkdownLite";
 import { site } from "../content/site";
+import { getForm } from "../forms";
 import { loadDoneInfo, type DoneInfo } from "../services/storage";
 
 /** Confirmation page. Details come from sessionStorage, so a direct visit shows only the generic message. */
@@ -14,6 +16,7 @@ export function Done({ formId }: { formId: string }) {
 
   const shortId = info?.submissionId.slice(0, 8);
   const isDeclined = info?.commitment === "no";
+  const doneMessage = getForm(formId)?.doneMessage;
 
   return (
     <div className="container container--narrow">
@@ -25,7 +28,14 @@ export function Done({ formId }: { formId: string }) {
         <p>{info.copySent ? `A copy was sent to ${info.email}.` : "You did not ask for a copy of your responses."}</p>
       )}
 
-      {isDeclined ? (
+      {doneMessage ? (
+        <>
+          <MarkdownLite text={doneMessage} />
+          <p>
+            Questions? Contact <ContactLink />.
+          </p>
+        </>
+      ) : isDeclined ? (
         <p>
           Thank you for letting us know. If your availability changes, contact <ContactLink />.
         </p>

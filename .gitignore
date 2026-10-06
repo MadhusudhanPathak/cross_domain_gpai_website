@@ -1,3 +1,13 @@
+# Only functional code and essential documentation are published.
+# Research working documents (questionnaire drafts, specs, taxonomies, papers, notes) stay local.
+/*.md
+!/README.md
+!/AGENTS.md
+/*.pdf
+/*.doc
+/*.docx
+/*.txt
+
 # Dependencies
 node_modules/
 
@@ -25,7 +35,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Editors
+# Editors and local agent settings
+.claude/
 .vscode/*
 !.vscode/extensions.json
 .idea/

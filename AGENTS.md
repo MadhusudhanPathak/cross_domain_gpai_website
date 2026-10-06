@@ -16,14 +16,15 @@ Data flow: `pages/FormPage` → `components/form/FormRenderer` → `services/api
 
 ### `src/formEngine/`: form logic
 
-- **Responsibilities:** the form schema types (`types.ts`), `showIf` evaluation and payload stripping (`visibility.ts`), per-field and per-form validation (`validate.ts`), and dynamic defaults (`defaults.ts`).
+- **Responsibilities:** the form schema types (`types.ts`), `showIf` evaluation and payload stripping (`visibility.ts`), per-field and per-form validation (`validate.ts`), the rules for the elicitation item types `estimate` and `allocation` (`items.ts`), and dynamic defaults (`defaults.ts`).
 - **Boundaries:** pure TypeScript, with no React, DOM, storage or network access. It may import only from `utils/`.
-- **Contract:** `validate.ts` must match `validateFieldServer_` in `apps-script/Code.gs`. If you change a rule or a message, change both.
+- **Contract:** `validate.ts` must match `validateFieldServer_` in `apps-script/Code.gs`, and `items.ts` must match `estimateError_` / `allocationError_` (same messages, same order of checks). If you change a rule or a message, change both. `src/forms/serverParity.test.ts` runs both validators on the same inputs and fails if they disagree.
 
 ### `src/forms/`: form definitions
 
-- **Responsibilities:** one JSON file per form, plus the registry `index.ts` (`getForm`).
-- **Boundaries:** data only. Field `id`s double as Sheet column headers, so renaming one creates a new column.
+- **Responsibilities:** one JSON file per form, plus the registry `index.ts` (`getForm`). `interest.json` is the expression of interest; `round1.json` is the Delphi Round 1 questionnaire (40 items transcribed from Part B of the study's questionnaire v1, a research document kept outside this repository). Its domain sections use `gateField` (items 02–10 unlock once item 01 is valid) and the form sets `stepNav`.
+- **Analysis metadata:** `<id>.meta.json` (e.g. `round1.meta.json`) holds per-item fields for analysis only (item type, slot, pair, ledger and claim references). `export-schemas.mjs` merges it into `Forms.gs` as `itemMeta`. **Never import a `.meta.json` file in the front end**: these labels must not be shown to participants, so they stay out of the JS bundle (the file itself is public in the repository).
+- **Boundaries:** data only. Field `id`s double as Sheet column headers, so renaming one creates a new column. Questionnaire item text must stay free of the internal labels and use bold, not italics (`forms.test.ts` checks both). Do not edit item wording while a round is open; bump `version` and `itemVersion` when you do.
 - **After editing:** run `npm run export:schemas` and redeploy the backend.
 
 ### `src/services/`: I/O
@@ -40,8 +41,10 @@ Data flow: `pages/FormPage` → `components/form/FormRenderer` → `services/api
 ### `src/components/`: presentation
 
 - `layout/`: the page shell (header, footer, skip link).
-- `form/`: `FormRenderer` runs the step-by-step flow (which step is shown, when to validate, submission). `DraftBar` and `ResumeDialog` handle server drafts. `FormParts` holds small presentational pieces: the draft banner, progress bar, honeypot and closed notice.
-- `fields/`: one component per field type. `FieldRenderer` maps a field's `type` to a component and coerces stored values to the expected shape. `FieldShell` provides the shared label, help and error markup, including the ARIA wiring.
+- `form/`: `FormRenderer` runs the step-by-step flow (which step is shown, when to validate, submission). Next always validates the current step and blocks on errors; with `stepNav`, the step bar only jumps forward to steps whose earlier steps are complete; a section's `gateField` disables the fields after it until it is valid. `DraftBar` and `ResumeDialog` handle server drafts. `FormParts` holds small presentational pieces: the draft banner, progress bars, step bar, honeypot and closed notice.
+- `fields/`: one component per field type. `FieldRenderer` maps a field's `type` to a component and coerces stored values to the expected shape. `FieldShell` provides the shared label, help and error markup, including the ARIA wiring. `EstimateField` (four-step) and `AllocationField` (100% across codes) share `ItemParts`.
+- `delphi/`: blocks that the questionnaire embeds through `info` fields (`component`): instructions, reference scenario and glossary (with the briefing pack link). Their copy lives in `content/delphi.ts`.
+- `MarkdownLite` renders the copy: paragraphs, dash lists, `**bold**` and links. It has no italics by design.
 - **Boundaries:** components call `services/` only through hooks or event handlers. Field components receive `value` and `onChange` and never read the full form data themselves.
 
 ### `src/pages/`, `src/content/`, `src/config.ts`
@@ -52,7 +55,7 @@ Data flow: `pages/FormPage` → `components/form/FormRenderer` → `services/api
 
 ## Backend (`apps-script/`)
 
-- `Code.gs`: request routing (`doPost`), validation, flattening answers into Sheet columns, idempotent submission (keyed by `submissionId`), superseding earlier rows from the same email, emails, drafts, and `setup()`.
+- `Code.gs`: request routing (`doPost`), validation, flattening answers into Sheet columns, idempotent submission (keyed by `submissionId`), superseding earlier rows from the same email, emails, drafts, and `setup()`. Forms with `estimate`/`allocation` items also get a salted pseudonymous `participant_id` and a `<sheet>_Long` tab with one row per item (no names or emails) for analysis.
 - `Forms.gs`: generated. Do not edit it by hand.
 - `appsscript.json`: the manifest (OAuth scopes and web app access).
 - **Boundaries:** treat every request field as untrusted. Pass values through `cell_()` before writing to the Sheet. Look forms up with `formFor_()`, never `FORMS[id]`.
@@ -63,3 +66,11 @@ Data flow: `pages/FormPage` → `components/form/FormRenderer` → `services/api
 - Files: PascalCase for React components, camelCase for everything else.
 - Keep everything dependency-light. Add no analytics, trackers, third-party fonts or third-party scripts, because the CSP in `vercel.json` would block them.
 - Before pushing, run `npm test && npm run build`.
+
+## What belongs in the repository
+
+The repository is public for research transparency, so it holds only functional code and essential documentation (`README.md`, `AGENTS.md`, `apps-script/README.md`, `docs/blueprint.md`).
+
+- Keep research working documents out: questionnaire drafts, implementation specs, taxonomies, papers, meeting notes. `.gitignore` ignores Markdown, PDF, Word and text files at the repository root, except `README.md` and `AGENTS.md`.
+- Never commit study data, Sheet exports, participant names or emails, or `.env` files.
+- Never put secrets in the front end or the repository. The Apps Script URL is public by design; the pseudonym salt (`id_salt`) lives only in the Sheet's `Config` tab.

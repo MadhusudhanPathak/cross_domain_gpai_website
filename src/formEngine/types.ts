@@ -20,6 +20,30 @@ export type RankingItem = { id: string; label: string };
 
 export type AvailabilitySlot = { value: string; label: string; description?: string };
 
+/** One category in an `allocation` field. `value` is the storage key; `code` is the short symbol shown to people. */
+export type AllocationCode = { value: string; code: string; label: string; description: string };
+
+/**
+ * Stored shape of an `estimate` field (four-step elicitation). Numbers are kept as the strings typed,
+ * so partial input survives drafts; validation parses them. `ooc` = "Outside my competence".
+ */
+export type EstimateValue = {
+  lowest: string;
+  highest: string;
+  best: string;
+  confidence: string;
+  rationale: string;
+  ooc: boolean;
+};
+
+/** Stored shape of an `allocation` field: points per code (as typed), plus the same confidence, rationale and `ooc` as an estimate. */
+export type AllocationValue = {
+  points: Record<string, string>;
+  confidence: string;
+  rationale: string;
+  ooc: boolean;
+};
+
 export type FieldBase = {
   id: string;
   label: string;
@@ -50,7 +74,20 @@ export type Field =
       minSlots?: number;
     })
   | (FieldBase & { type: "consents"; options: Option[] })
-  | (FieldBase & { type: "info"; text?: string; component?: string });
+  | (FieldBase & {
+      type: "estimate";
+      /** Markdown shown above the question, e.g. the evidence and the claim. */
+      stem?: string;
+      question: string;
+    })
+  | (FieldBase & {
+      type: "allocation";
+      stem?: string;
+      question: string;
+      /** Points are allocated across these codes and must total exactly 100. */
+      codes: AllocationCode[];
+    })
+  | (FieldBase & { type: "info"; text?: string; component?: string; variant?: "callout" });
 
 export type FieldType = Field["type"];
 
@@ -62,6 +99,8 @@ export type Section = {
   title: string;
   description?: string;
   showIf?: Condition;
+  /** Id of a field in this section. The fields after it stay disabled until it is answered validly. */
+  gateField?: string;
   fields: Field[];
 };
 
@@ -75,6 +114,10 @@ export type FormDef = {
   /** Name of the Google Sheet tab that stores submissions. */
   sheet: string;
   access: "open" | "panel";
+  /** When true, shows a bar of all steps. People can jump back freely, and forward only to steps whose earlier steps are all complete. */
+  stepNav?: boolean;
+  /** Markdown shown on the confirmation page instead of the default "we will be in touch" line. */
+  doneMessage?: string;
   sections: Section[];
 };
 

@@ -16,6 +16,9 @@ export function Home() {
         <Link href="/forms/interest" className="button button--primary">
           Express interest
         </Link>
+        <Link href="/forms/round1" className="button button--secondary">
+          Round 1 questionnaire
+        </Link>
       </div>
 
       <h2>The process at a glance</h2>

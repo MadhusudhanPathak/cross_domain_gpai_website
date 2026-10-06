@@ -2,7 +2,9 @@
 
 A small static site that hosts the forms for the GPAI Delphi study. Submissions go to a Google Sheet through a Google Apps Script web app. The site has no user accounts, no cookies, no analytics, and makes no third-party requests other than the Apps Script call.
 
-Forms are defined in JSON (`src/forms/`), so a new form needs no new page code. The design specification the site was built from is in [`docs/blueprint.md`](docs/blueprint.md).
+Forms are defined in JSON (`src/forms/`), so a new form needs no new page code. Two forms are live: the expression of interest (`/forms/interest`) and the Round 1 Delphi questionnaire (`/forms/round1`, described [below](#round-1-questionnaire)). The design specification the site was built from is in [`docs/blueprint.md`](docs/blueprint.md).
+
+The repository is public for research transparency. It contains only the site's code and its documentation. The study's working documents (questionnaire drafts, implementation spec, taxonomies, papers) are kept outside it; `.gitignore` excludes any Markdown, PDF, Word or text file placed at the repository root other than `README.md` and `AGENTS.md`. Study data lives only in the Google Sheet and is never committed.
 
 ## Prerequisites
 
@@ -32,29 +34,31 @@ npm run dev
 | --- | --- | --- |
 | `VITE_APPS_SCRIPT_URL` | `.env.local` or the host's environment variables | Apps Script `/exec` URL. If unset or blank, the default in `src/config.ts` is used. The URL is public by design, so it is not a secret. |
 | Study copy, contact email, dates | `src/content/site.ts`, `src/content/process.ts` | Owner-editable text |
-| Form open/close, notification email | The Sheet's `Config` tab | Takes effect without a redeploy |
+| Form open/close, notification email | The Sheet's `Config` tab (`interest_open`, `round1_open`, `<id>_closes_at`, `notify_email`) | Takes effect without a redeploy |
+| Questionnaire copy: briefing pack link, instructions, reference scenario, glossary | `src/content/delphi.ts` | Item wording is in `src/forms/round1.json` |
 
 ## Architecture
 
 ```text
 Browser (React SPA on Vercel)
   └─ POST text/plain JSON ──> Apps Script web app (apps-script/Code.gs)
-                                └─ Google Sheet tabs: Interest, Drafts, Config, Panel, Log
+                                └─ Google Sheet tabs: Interest, Round1, Round1_Long, Drafts, Config, Panel, Log
 ```
 
 ```text
 src/
 ├─ main.tsx, App.tsx      Entry point and routes
 ├─ config.ts              Runtime configuration (backend URL, timeouts)
-├─ content/               Owner-editable copy (study details, process stages)
-├─ forms/                 JSON form definitions and the form registry
-├─ formEngine/            Pure form logic: types, visibility, validation, defaults
+├─ content/               Owner-editable copy (study details, process stages, questionnaire instructions and glossary)
+├─ forms/                 JSON form definitions, analysis metadata (*.meta.json) and the form registry
+├─ formEngine/            Pure form logic: types, visibility, validation, elicitation-item rules, defaults
 ├─ services/              Backend API client and browser storage
 ├─ hooks/                 React hooks for form state, status and autosave
 ├─ components/
 │  ├─ layout/             Header, footer, page shell
-│  ├─ form/               Multi-step form renderer, drafts, error summary
-│  └─ fields/             One component per field type
+│  ├─ form/               Multi-step form renderer, step bar, drafts, error summary
+│  ├─ fields/             One component per field type (incl. the four-step and allocation widgets)
+│  └─ delphi/             Questionnaire blocks: instructions, reference scenario, glossary
 ├─ pages/                 Route components
 ├─ utils/                 Date, UUID and type-guard helpers
 └─ styles/                Design tokens and global CSS
@@ -65,12 +69,42 @@ docs/                     Design specification
 
 Key points:
 
-- **Validation runs twice.** `src/formEngine/validate.ts` validates in the browser, and `apps-script/Code.gs` repeats the same rules on the server. Change them together.
+- **Validation runs twice.** `src/formEngine/validate.ts` (with `items.ts` for the questionnaire items) validates in the browser, and `apps-script/Code.gs` repeats the same rules on the server. Change them together; `src/forms/serverParity.test.ts` fails if they disagree.
 - **`Forms.gs` is generated.** The backend reads form definitions from `apps-script/Forms.gs`, which `npm run export:schemas` builds from `src/forms/*.json`.
 - **Requests use `Content-Type: text/plain`**, which avoids a CORS preflight that Apps Script cannot answer.
 - **Answers are autosaved** to `localStorage` on the visitor's device. "Save and continue later" also stores a server-side draft, protected by a resume code sent by email.
 
 See [`AGENTS.md`](AGENTS.md) for what each module is responsible for.
+
+## Round 1 questionnaire
+
+`/forms/round1` is the first round of a two-round Delphi study using the IDEA protocol. Experts estimate how many of 100 well-informed, independent reviewers would accept a given evidence-to-claim inference about a general-purpose AI model under the EU AI Act. The 40 items (10 per domain, D1–D4) are in `src/forms/round1.json`; the instructions, reference scenario and glossary are in `src/content/delphi.ts`.
+
+**Flow.** About you (name, email, panel: technical or legal) → How to answer → D1 Model opacity → D2 Data integrity → D3 Normative competence → D4 Adversarial robustness → Check and send. Each domain page shows the reference scenario, the domain's anchor claim and a glossary panel above its items.
+
+**Item types.**
+
+| Position | Widget | Rules |
+| --- | --- | --- |
+| 01 | Allocation (`allocation`) | Whole-number percentages across seven constraint codes (L, V, T, E, N, O, Ø) that add up to exactly 100%, plus a confidence of 50–100% |
+| 02–10 | Four-step estimate (`estimate`) | Lower, upper and best estimates (0–100, lower ≤ best ≤ upper), then a confidence of 50–100% that the true count lies between the lower and upper estimates |
+
+Every item also has "Outside my competence" (clears and replaces the numbers) and an optional rationale (word counter; a warning above 100 words, rejected above 150).
+
+**Navigation.**
+
+- In each domain, items 02–10 stay locked until item 01 adds up to 100% (or is marked outside competence).
+- Next, and the step bar, only move forward once every item on the current page is answered or marked outside competence. Going back is always allowed.
+- Submitting again with the same email supersedes the earlier submission.
+
+**Data.**
+
+- `Round1`: one row per submission, with name, email and one column per item part (e.g. `D1-02_lowest`, `D1-01_L`).
+- `Round1_Long`: one row per participant × item, for analysis. It carries a salted pseudonymous `participant_id` instead of name and email, the item metadata from `src/forms/round1.meta.json` (item type, technique, slot, pair, ledger and claim references), and the standardised 80% interval (`lower80`, `upper80`). Filter out rows whose `status` is `superseded`.
+
+The analysis metadata is public in this repository but deliberately kept out of the site's JavaScript bundle, so it is never shown to participants while they answer.
+
+**Changing item text.** Bump `version` in `round1.json` and `itemVersion` in `round1.meta.json`, run `npm run export:schemas`, paste and redeploy `Forms.gs`, and push. Do not change wording while a round is open.
 
 ## Deployment
 
@@ -136,7 +170,14 @@ The form is then live at `/forms/<id>`. A minimal definition:
 }
 ```
 
-Panel-only forms, Round 2 and call scheduling are not built yet. §16 of the blueprint describes how to add them.
+Optional extras:
+
+- `"stepNav": true` shows a bar of all steps with progress per step. People can go back freely, but cannot move forward (by Next or the bar) until the current step is complete.
+- A section's `"gateField"` locks the fields after it until that field is answered validly. Round 1 uses it so that each domain's questions 02–10 unlock only once question 01 adds up to 100% (or is marked "Outside my competence").
+- `"doneMessage"` replaces the default text on the confirmation page.
+- Elicitation items use the `estimate` (four-step: lower, upper and best estimates, confidence) and `allocation` (100% across codes) field types. Analysis-only metadata goes in `src/forms/<id>.meta.json`. The export script merges it into `Forms.gs`, and the front end never imports it.
+
+Panel-only (invite-only) forms, Round 2 and call scheduling are not built yet. §16 of the blueprint describes how to add them.
 
 ### Content to fill in before launch
 
@@ -146,6 +187,8 @@ Panel-only forms, Round 2 and call scheduling are not built yet. §16 of the blu
 | Stage descriptions and dates | `src/content/process.ts` |
 | Retention wording in the consent text | `src/forms/interest.json` (`consent_storage`) |
 | Interest form close date | `Config` → `interest_closes_at` |
+| Round 1 briefing pack link (`briefingPackUrl`) and glossary | `src/content/delphi.ts` |
+| Round 1 opening and close date | `Config` → `round1_open`, `round1_closes_at` |
 
 The institution's data protection officer or ethics committee must approve the wording of the Privacy page (`src/pages/Privacy.tsx`) before the site goes live.
 

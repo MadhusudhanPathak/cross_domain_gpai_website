@@ -1,12 +1,16 @@
 import { useEffect, type ComponentType } from "react";
+import { asAllocation, asEstimate } from "../../formEngine/items";
 import type { Field, FieldOf, FormData } from "../../formEngine/types";
 import { isRecord } from "../../utils/guards";
 import { MarkdownLite } from "../MarkdownLite";
 import { ProcessOverview } from "../ProcessOverview";
+import { DelphiInstructions, Glossary, ReferenceScenario } from "../delphi/DelphiInfo";
+import { AllocationField } from "./AllocationField";
 import { AvailabilityField } from "./AvailabilityField";
 import { CheckboxField } from "./CheckboxField";
 import { CheckboxesField } from "./CheckboxesField";
 import { ConsentsField } from "./ConsentsField";
+import { EstimateField } from "./EstimateField";
 import { MatrixField } from "./MatrixField";
 import { RadioField } from "./RadioField";
 import { RankingField } from "./RankingField";
@@ -24,6 +28,9 @@ type Props = {
 /** Components that an `info` field may embed via its `component` property. */
 const INFO_COMPONENTS: Record<string, ComponentType> = {
   ProcessOverview,
+  ReferenceScenario,
+  Glossary,
+  DelphiInstructions,
 };
 
 const asString = (v: unknown): string => (typeof v === "string" ? v : "");
@@ -65,7 +72,7 @@ export function FieldRenderer({ field, data, setField, error }: Props) {
     case "info": {
       const Embedded = field.component ? INFO_COMPONENTS[field.component] : undefined;
       return (
-        <div className="field" id={field.id}>
+        <div className={field.variant === "callout" ? "field callout" : "field"} id={field.id}>
           {Embedded ? <Embedded /> : field.text ? <MarkdownLite text={field.text} /> : null}
         </div>
       );
@@ -108,5 +115,9 @@ export function FieldRenderer({ field, data, setField, error }: Props) {
       );
     case "consents":
       return <ConsentsField field={field} value={asRecord<boolean>(value)} onChange={onChange} error={error} />;
+    case "estimate":
+      return <EstimateField field={field} value={asEstimate(value)} onChange={onChange} error={error} />;
+    case "allocation":
+      return <AllocationField field={field} value={asAllocation(value, field.codes)} onChange={onChange} error={error} />;
   }
 }

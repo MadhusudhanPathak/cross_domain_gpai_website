@@ -1,0 +1,328 @@
+{
+  "$comment": "Analysis-only metadata for round1.json (implementation spec §6.3). Never imported by the front end: scripts/export-schemas.mjs merges it into apps-script/Forms.gs so the Round1_Long tab can carry it.",
+  "formId": "round1",
+  "round": 1,
+  "itemVersion": "1.0",
+  "items": {
+    "D1-01": {
+      "item_type": "diagnosis",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q1"
+    },
+    "D1-02": {
+      "item_type": "bounded",
+      "technique": "Sparse autoencoders",
+      "slot": "mainstream",
+      "pair_id": "D1-P1",
+      "ledger_ref": "G01",
+      "claim_ref": "Q1"
+    },
+    "D1-03": {
+      "item_type": "transfer",
+      "technique": "Sparse autoencoders",
+      "slot": "mainstream",
+      "pair_id": "D1-P1",
+      "ledger_ref": "G01",
+      "claim_ref": "Q2"
+    },
+    "D1-04": {
+      "item_type": "bounded",
+      "technique": "Automated circuit discovery",
+      "slot": "underdog",
+      "pair_id": "D1-P2",
+      "ledger_ref": "G02",
+      "claim_ref": "Q1"
+    },
+    "D1-05": {
+      "item_type": "transfer",
+      "technique": "Automated circuit discovery",
+      "slot": "underdog",
+      "pair_id": "D1-P2",
+      "ledger_ref": "G02",
+      "claim_ref": "Q1"
+    },
+    "D1-06": {
+      "item_type": "bounded",
+      "technique": "Lens family",
+      "slot": "feasible",
+      "pair_id": "D1-P3",
+      "ledger_ref": "G03",
+      "claim_ref": "Q1"
+    },
+    "D1-07": {
+      "item_type": "transfer",
+      "technique": "Lens family",
+      "slot": "feasible",
+      "pair_id": "D1-P3",
+      "ledger_ref": "G03",
+      "claim_ref": "Q1"
+    },
+    "D1-08": {
+      "item_type": "access",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q1"
+    },
+    "D1-09": {
+      "item_type": "shared_remedy",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q1"
+    },
+    "D1-10": {
+      "item_type": "specific_remedy",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q1"
+    },
+    "D2-01": {
+      "item_type": "diagnosis",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q3+Q4"
+    },
+    "D2-02": {
+      "item_type": "bounded",
+      "technique": "Adversarial debiasing",
+      "slot": "mainstream",
+      "pair_id": "D2-P1",
+      "ledger_ref": "G04",
+      "claim_ref": "Q4"
+    },
+    "D2-03": {
+      "item_type": "transfer",
+      "technique": "Adversarial debiasing",
+      "slot": "mainstream",
+      "pair_id": "D2-P1",
+      "ledger_ref": "G04",
+      "claim_ref": "Q4"
+    },
+    "D2-04": {
+      "item_type": "bounded",
+      "technique": "Dynamic adversarial data collection",
+      "slot": "underdog",
+      "pair_id": "D2-P2",
+      "ledger_ref": "G05",
+      "claim_ref": "Q4"
+    },
+    "D2-05": {
+      "item_type": "transfer",
+      "technique": "Dynamic adversarial data collection",
+      "slot": "underdog",
+      "pair_id": "D2-P2",
+      "ledger_ref": "G05, G13",
+      "claim_ref": "Q3"
+    },
+    "D2-06": {
+      "item_type": "bounded",
+      "technique": "Alignment pretraining",
+      "slot": "feasible",
+      "pair_id": "D2-P3",
+      "ledger_ref": "G06",
+      "claim_ref": "Q3"
+    },
+    "D2-07": {
+      "item_type": "transfer",
+      "technique": "Alignment pretraining",
+      "slot": "feasible",
+      "pair_id": "D2-P3",
+      "ledger_ref": "G06",
+      "claim_ref": "Q4"
+    },
+    "D2-08": {
+      "item_type": "access",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q3+Q4"
+    },
+    "D2-09": {
+      "item_type": "shared_remedy",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q3+Q4"
+    },
+    "D2-10": {
+      "item_type": "specific_remedy",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q3+Q4"
+    },
+    "D3-01": {
+      "item_type": "diagnosis",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q5"
+    },
+    "D3-02": {
+      "item_type": "bounded",
+      "technique": "Constitutional AI",
+      "slot": "mainstream",
+      "pair_id": "D3-P1",
+      "ledger_ref": "G07",
+      "claim_ref": "Q5"
+    },
+    "D3-03": {
+      "item_type": "transfer",
+      "technique": "Constitutional AI",
+      "slot": "mainstream",
+      "pair_id": "D3-P1",
+      "ledger_ref": "G07",
+      "claim_ref": "Q5"
+    },
+    "D3-04": {
+      "item_type": "bounded",
+      "technique": "AI safety via debate",
+      "slot": "underdog",
+      "pair_id": "D3-P2",
+      "ledger_ref": "G08",
+      "claim_ref": "Q5"
+    },
+    "D3-05": {
+      "item_type": "transfer",
+      "technique": "AI safety via debate",
+      "slot": "underdog",
+      "pair_id": "D3-P2",
+      "ledger_ref": "G08",
+      "claim_ref": "Q5"
+    },
+    "D3-06": {
+      "item_type": "bounded",
+      "technique": "Inverse reinforcement learning",
+      "slot": "feasible",
+      "pair_id": "D3-P3",
+      "ledger_ref": "G09",
+      "claim_ref": "Q5"
+    },
+    "D3-07": {
+      "item_type": "transfer",
+      "technique": "Inverse reinforcement learning",
+      "slot": "feasible",
+      "pair_id": "D3-P3",
+      "ledger_ref": "G09",
+      "claim_ref": "Q5"
+    },
+    "D3-08": {
+      "item_type": "access",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q5"
+    },
+    "D3-09": {
+      "item_type": "shared_remedy",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q5"
+    },
+    "D3-10": {
+      "item_type": "specific_remedy",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q5"
+    },
+    "D4-01": {
+      "item_type": "diagnosis",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q7"
+    },
+    "D4-02": {
+      "item_type": "bounded",
+      "technique": "Constitutional classifiers",
+      "slot": "mainstream",
+      "pair_id": "D4-P1",
+      "ledger_ref": "G10",
+      "claim_ref": "Q7"
+    },
+    "D4-03": {
+      "item_type": "transfer",
+      "technique": "Constitutional classifiers",
+      "slot": "mainstream",
+      "pair_id": "D4-P1",
+      "ledger_ref": "G10",
+      "claim_ref": "Q7"
+    },
+    "D4-04": {
+      "item_type": "bounded",
+      "technique": "Representation-engineering circuit breakers",
+      "slot": "underdog",
+      "pair_id": "D4-P2",
+      "ledger_ref": "G11",
+      "claim_ref": "Q7"
+    },
+    "D4-05": {
+      "item_type": "transfer",
+      "technique": "Representation-engineering circuit breakers",
+      "slot": "underdog",
+      "pair_id": "D4-P2",
+      "ledger_ref": "G11",
+      "claim_ref": "Q7"
+    },
+    "D4-06": {
+      "item_type": "bounded",
+      "technique": "Process reward modelling",
+      "slot": "feasible",
+      "pair_id": "D4-P3",
+      "ledger_ref": "G12",
+      "claim_ref": "Q7"
+    },
+    "D4-07": {
+      "item_type": "transfer",
+      "technique": "Process reward modelling",
+      "slot": "feasible",
+      "pair_id": "D4-P3",
+      "ledger_ref": "G12",
+      "claim_ref": "Q7"
+    },
+    "D4-08": {
+      "item_type": "access",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q7"
+    },
+    "D4-09": {
+      "item_type": "shared_remedy",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q7"
+    },
+    "D4-10": {
+      "item_type": "specific_remedy",
+      "technique": "",
+      "slot": "",
+      "pair_id": "",
+      "ledger_ref": "",
+      "claim_ref": "Q7"
+    }
+  }
+}

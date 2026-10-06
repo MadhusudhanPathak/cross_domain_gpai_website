@@ -18,7 +18,8 @@ This folder is not deployed automatically. Copy its contents into the Apps Scrip
 - Edit `Code.gs` in the Apps Script editor directly, or paste over it from this repo.
 - After changing any form JSON in `src/forms/`, run `npm run export:schemas` and paste the new `apps-script/Forms.gs` into the Apps Script project.
 - Deploy changes with **Deploy > Manage deployments > (pencil icon) > Version: New version > Deploy**. This keeps the same `/exec` URL. Do **not** use "New deployment" for updates, since that creates a new URL.
-- If new form fields were added, run `setup()` again — it only adds missing headers, so existing data is never touched.
+- If new form fields were added, run `setup()` again — it only adds missing headers and Config keys (`<form>_open`, `id_salt`), so existing data is never touched.
+- Do not change `id_salt` in the `Config` tab once responses exist: it derives each participant's pseudonymous `participant_id`, and changing it breaks the link between rounds.
 
 ## Testing
 
