@@ -1,8 +1,8 @@
 /** Owner-editable study details. Components read these values instead of hard-coding them. */
 
 export const site = {
-  studyName: "Cross Domain GPAI Delphi Study",
-  shortName: "GPAI Delphi Study",
+  studyName: "Bridging Technical and Governance Gaps in General-Purpose AI: A Cross-Domain Delphi Validated Framework",
+  shortName: "BTAGG_GPAI",
   contactEmail: "madhu.sudhan.pathak.ais@gmail.com",
   siteUrl: "https://crossdomaingpaiwebsite.vercel.app/",
   replyByDate: "07 October 2026",

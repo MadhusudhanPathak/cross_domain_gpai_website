@@ -13,7 +13,7 @@ export const stages: Stage[] = [
   {
     id: "round1",
     label: "Round 1: independent ratings",
-    window: "01 - 10 Oct",
+    window: "01 - 13 Oct",
     minutes: 45,
     durationLabel: "~45 min",
     mode: "Asynchronous online form, own time",
@@ -22,7 +22,7 @@ export const stages: Stage[] = [
   {
     id: "summary",
     label: "Summary prepared",
-    window: "10 - 12 Oct",
+    window: "13 - 15 Oct",
     minutes: 0,
     durationLabel: "none",
     mode: "Prepared by the research team",
@@ -31,9 +31,9 @@ export const stages: Stage[] = [
   {
     id: "round2",
     label: "Round 2: review and revise",
-    window: "13 - 20 Oct",
+    window: "15 - 20 Oct",
     minutes: 60,
-    durationLabel: "~30 min + ~30 min",
+    durationLabel: "~1 hour",
     mode: "Asynchronous online form, own time",
     description: "You review the anonymised Round 1 summary, then revise your own answers in light of it.",
   },

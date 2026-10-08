@@ -653,7 +653,7 @@ function setup() {
   const cfg = ss.getSheetByName('Config');
   if (cfg.getLastRow() < 2) cfg.getRange(2, 1, 7, 2).setValues([
     ['interest_open', 'TRUE'], ['interest_closes_at', ''], ['contact_email', 'madhu.sudhan.pathak.ais@gmail.com'],
-    ['notify_email', ''], ['site_url', 'https://crossdomaingpaiwebsite.vercel.app/'], ['study_name', 'Cross Domain GPAI Delphi Study'],
+    ['notify_email', ''], ['site_url', 'https://crossdomaingpaiwebsite.vercel.app/'], ['study_name', 'Bridging Technical and Governance Gaps in General-Purpose AI: A Cross-Domain Delphi Validated Framework'],
     ['team_names', 'Elisabetta, Carola, Madhusudhan']]);
   // Keys added after the first setup are appended without touching existing values.
   Object.keys(FORMS).forEach(function (id) { ensureConfig_(id + '_open', 'TRUE'); });
