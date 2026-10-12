@@ -451,6 +451,24 @@ const FORMS = {
     "access": "open",
     "doneMessage": "Thank you for completing Round 1. Round 2 opens once Round 1 has closed; we will email you when it does. In Round 2 you will see both panels' anonymised Round 1 results and can revise or confirm your answers.",
     "stepNav": true,
+    "resetOnUpgrade": [
+      "D1-01",
+      "D1-08",
+      "D1-09",
+      "D1-10",
+      "D2-01",
+      "D2-08",
+      "D2-09",
+      "D2-10",
+      "D3-01",
+      "D3-08",
+      "D3-09",
+      "D3-10",
+      "D4-01",
+      "D4-08",
+      "D4-09",
+      "D4-10"
+    ],
     "sections": [
       {
         "id": "about",

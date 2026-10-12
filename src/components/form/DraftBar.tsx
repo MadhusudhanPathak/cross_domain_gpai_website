@@ -1,11 +1,14 @@
 import { useState } from "react";
 import type { FormData } from "../../formEngine/types";
+import { DRAFT_VERSION_KEY } from "../../formEngine/upgrade";
 import { call, type SaveDraftResponse } from "../../services/api";
 import { getResumeCode } from "../../services/storage";
 import { ResumeDialog } from "./ResumeDialog";
 
 type Props = {
   formId: string;
+  /** Recorded with each server draft, so a draft saved under an earlier version can be upgraded on resume. */
+  formVersion: string;
   data: FormData;
   onRestore: (data: FormData) => void;
 };
@@ -14,7 +17,7 @@ type Props = {
  * "Save and continue later" and "Resume a saved draft" controls. The first server save emails a
  * resume code; later saves for the same email must present that code.
  */
-export function DraftBar({ formId, data, onRestore }: Props) {
+export function DraftBar({ formId, formVersion, data, onRestore }: Props) {
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
   const [needsCode, setNeedsCode] = useState(false);
@@ -33,7 +36,7 @@ export function DraftBar({ formId, data, onRestore }: Props) {
       action: "saveDraft",
       formId,
       email,
-      data,
+      data: { ...data, [DRAFT_VERSION_KEY]: formVersion },
       code: code ?? getResumeCode(formId) ?? undefined,
     });
     setBusy(false);

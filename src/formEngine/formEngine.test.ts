@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { validateForm } from "./validate";
 import { isVisible, stripHidden } from "./visibility";
 import { applyDefaults } from "./defaults";
+import { DRAFT_VERSION_KEY, splitServerDraft, upgradeDraft } from "./upgrade";
 import type { FormDef } from "./types";
 
 const form: FormDef = {
@@ -124,5 +125,28 @@ describe("applyDefaults", () => {
 
   it("keeps an existing value", () => {
     expect(applyDefaults(tzForm, { timezone: "Europe/Rome" }).timezone).toBe("Europe/Rome");
+  });
+});
+
+describe("upgradeDraft", () => {
+  const reworded: FormDef = { ...form, version: "1.1.0", resetOnUpgrade: ["name"] };
+  const saved = { name: "Ada", email: "ada@example.org" };
+
+  it("keeps a draft saved under the current version as it is", () => {
+    expect(upgradeDraft(reworded, saved, "1.1.0")).toEqual({ data: saved, cleared: 0 });
+  });
+
+  it("drops reworded answers from a draft saved under another or an unknown version", () => {
+    expect(upgradeDraft(reworded, saved, "1.0.0")).toEqual({ data: { email: "ada@example.org" }, cleared: 1 });
+    expect(upgradeDraft(reworded, saved, undefined)).toEqual({ data: { email: "ada@example.org" }, cleared: 1 });
+  });
+
+  it("drops nothing for a form without reworded fields", () => {
+    expect(upgradeDraft(form, saved, "0.9.0")).toEqual({ data: saved, cleared: 0 });
+  });
+
+  it("separates a server draft's version from its answers", () => {
+    expect(splitServerDraft({ ...saved, [DRAFT_VERSION_KEY]: "1.0.0" })).toEqual({ data: saved, version: "1.0.0" });
+    expect(splitServerDraft(saved)).toEqual({ data: saved, version: undefined });
   });
 });

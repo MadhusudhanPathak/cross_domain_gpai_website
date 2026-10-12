@@ -16,7 +16,7 @@ Data flow: `pages/FormPage` → `components/form/FormRenderer` → `services/api
 
 ### `src/formEngine/`: form logic
 
-- **Responsibilities:** the form schema types (`types.ts`), `showIf` evaluation and payload stripping (`visibility.ts`), per-field and per-form validation (`validate.ts`), the rules for the elicitation item types `estimate` and `allocation` (`items.ts`), and dynamic defaults (`defaults.ts`).
+- **Responsibilities:** the form schema types (`types.ts`), `showIf` evaluation and payload stripping (`visibility.ts`), per-field and per-form validation (`validate.ts`), the rules for the elicitation item types `estimate` and `allocation` (`items.ts`), dynamic defaults (`defaults.ts`), and upgrading drafts saved under an earlier form version (`upgrade.ts`).
 - **Boundaries:** pure TypeScript, with no React, DOM, storage or network access. It may import only from `utils/`.
 - **Contract:** `validate.ts` must match `validateFieldServer_` in `apps-script/Code.gs`, and `items.ts` must match `estimateError_` / `allocationError_` (same messages, same order of checks). If you change a rule or a message, change both. `src/forms/serverParity.test.ts` runs both validators on the same inputs and fails if they disagree.
 
@@ -24,7 +24,7 @@ Data flow: `pages/FormPage` → `components/form/FormRenderer` → `services/api
 
 - **Responsibilities:** one JSON file per form, plus the registry `index.ts` (`getForm`). `interest.json` is the expression of interest; `round1.json` is the Delphi Round 1 questionnaire (40 items transcribed from Part B of the study's questionnaire v1, a research document kept outside this repository). Its domain sections use `gateField` (items 02–10 unlock once item 01 is valid) and the form sets `stepNav`.
 - **Analysis metadata:** `<id>.meta.json` (e.g. `round1.meta.json`) holds per-item fields for analysis only (item type, slot, pair, ledger and claim references). `export-schemas.mjs` merges it into `Forms.gs` as `itemMeta`. **Never import a `.meta.json` file in the front end**: these labels must not be shown to participants, so they stay out of the JS bundle (the file itself is public in the repository).
-- **Boundaries:** data only. Field `id`s double as Sheet column headers, so renaming one creates a new column. Questionnaire item text must stay free of the internal labels and use bold, not italics (`forms.test.ts` checks both). Do not edit item wording while a round is open; bump `version` and `itemVersion` when you do.
+- **Boundaries:** data only. Field `id`s double as Sheet column headers, so renaming one creates a new column. Questionnaire item text must stay free of the internal labels and use bold, not italics (`forms.test.ts` checks both). Do not edit item wording while a round is open; bump `version` and `itemVersion` when you do, and list the reworded fields in `resetOnUpgrade` so drafts saved under the old wording are restored without those answers.
 - **After editing:** run `npm run export:schemas` and redeploy the backend.
 
 ### `src/services/`: I/O

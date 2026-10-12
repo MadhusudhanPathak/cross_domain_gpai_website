@@ -3,12 +3,13 @@ import { useLocation } from "wouter";
 import { applyDefaults } from "../../formEngine/defaults";
 import type { Field, FieldErrors, FormData, FormDef } from "../../formEngine/types";
 import { hasErrors, validateField, validateForm, validateSection } from "../../formEngine/validate";
+import { splitServerDraft, upgradeDraft } from "../../formEngine/upgrade";
 import { firstSectionWithError, isVisible, stripHidden, visibleFields, visibleSections } from "../../formEngine/visibility";
 import { useFormState } from "../../hooks/useFormState";
 import { useFormStatus } from "../../hooks/useFormStatus";
 import { useLocalDraftAutosave } from "../../hooks/useLocalDraftAutosave";
 import { call, type SubmitResponse } from "../../services/api";
-import { clearLocalDraft, loadLocalDraft, saveDoneInfo } from "../../services/storage";
+import { clearLocalDraft, loadLocalDraft, saveDoneInfo, saveLocalDraft } from "../../services/storage";
 import { uuid } from "../../utils/uuid";
 import { MarkdownLite } from "../MarkdownLite";
 import { FieldRenderer } from "../fields/FieldRenderer";
@@ -26,8 +27,12 @@ const optionalString = (v: unknown): string | undefined => (typeof v === "string
  */
 export function FormRenderer({ form }: { form: FormDef }) {
   const [, navigate] = useLocation();
-  const [initialDraft] = useState(() => loadLocalDraft(form.id, form.version));
+  const [initialDraft] = useState(() => {
+    const draft = loadLocalDraft(form.id, form.version);
+    return draft && { ...draft, ...upgradeDraft(form, draft.data, draft.version) };
+  });
   const { data, setField, replaceAll } = useFormState(() => applyDefaults(form, initialDraft?.data ?? {}));
+  const [clearedAnswers, setClearedAnswers] = useState(initialDraft?.cleared ?? 0);
 
   const [stepIndex, setStepIndex] = useState(0);
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -40,6 +45,13 @@ export function FormRenderer({ form }: { form: FormDef }) {
 
   const formStatus = useFormStatus(form.id);
   useLocalDraftAutosave(form.id, form.version, data);
+
+  // A draft saved under an earlier version is moved to the current one at once, so leaving before the next autosave loses nothing.
+  useEffect(() => {
+    if (!initialDraft || initialDraft.version === form.version) return;
+    saveLocalDraft(form.id, form.version, initialDraft.data);
+    clearLocalDraft(form.id, initialDraft.version);
+  }, [form.id, form.version, initialDraft]);
 
   const sections = useMemo(() => visibleSections(form, data), [form, data]);
   const step = Math.max(0, Math.min(stepIndex, sections.length - 1));
@@ -113,13 +125,17 @@ export function FormRenderer({ form }: { form: FormDef }) {
   }
 
   function restoreDraft(restored: FormData) {
-    replaceAll(restored);
+    const { data: answers, version } = splitServerDraft(restored);
+    const upgraded = upgradeDraft(form, answers, version);
+    replaceAll(upgraded.data);
+    setClearedAnswers(upgraded.cleared);
     setShowDraftBanner(false);
   }
 
   function discardLocalDraft() {
     clearLocalDraft(form.id, form.version);
     replaceAll({});
+    setClearedAnswers(0);
     setShowDraftBanner(false);
   }
 
@@ -163,7 +179,14 @@ export function FormRenderer({ form }: { form: FormDef }) {
     <div className="container">
       <CompletionBar percent={completionPercent} />
 
-      <DraftBar formId={form.id} data={data} onRestore={restoreDraft} />
+      <DraftBar formId={form.id} formVersion={form.version} data={data} onRestore={restoreDraft} />
+
+      {clearedAnswers > 0 && (
+        <p className="alert" role="status">
+          Some questions were reworded after you saved your answers, so your answers to them have been cleared. Please
+          answer them again.
+        </p>
+      )}
 
       {showDraftBanner && <DraftBanner onKeep={() => setShowDraftBanner(false)} onDiscard={discardLocalDraft} />}
 
