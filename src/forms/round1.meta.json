@@ -2,7 +2,7 @@
   "$comment": "Analysis-only metadata for round1.json (implementation spec §6.3). Never imported by the front end: scripts/export-schemas.mjs merges it into apps-script/Forms.gs so the Round1_Long tab can carry it.",
   "formId": "round1",
   "round": 1,
-  "itemVersion": "1.0",
+  "itemVersion": "1.1",
   "items": {
     "D1-01": {
       "item_type": "diagnosis",

@@ -442,9 +442,9 @@ const FORMS = {
   },
   "round1": {
     "id": "round1",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "title": "Expert elicitation on evidence and verification for general-purpose AI",
-    "intro": "Round 1 questionnaire: 40 items in four domain blocks. It takes about a focused sittings of 40–50 minutes, and you may pause at any time: your answers are kept in this browser, and \"Save and continue later\" lets you resume on another device. Best completed on a computer.",
+    "intro": "Round 1 questionnaire: 40 items in four domain blocks. It takes a focused sittings of about 40–50 minutes in total, and you may pause at any time: your answers are kept in this browser, and \"Save and continue later\" lets you resume on another device. Best completed on a computer.",
     "estimatedMinutes": 45,
     "submitLabel": "Send my Round 1 answers",
     "sheet": "Round1",
@@ -508,42 +508,30 @@ const FORMS = {
         "gateField": "D1-01",
         "fields": [
           {
-            "id": "D1_scenario",
-            "type": "info",
-            "label": "Reference scenario",
-            "component": "ReferenceScenario"
-          },
-          {
             "id": "D1_anchor",
             "type": "info",
             "label": "Anchor claim",
             "variant": "callout",
-            "text": "**Anchor claim (D1).** **A mechanistic account offered in the provider's documentation correctly explains a specified safety-relevant behaviour of the deployed model (for example, how the model comes to refuse a category of dangerous requests).**"
-          },
-          {
-            "id": "D1_glossary",
-            "type": "info",
-            "label": "Glossary",
-            "component": "Glossary"
+            "text": "**Anchor claim (D1).** **A mechanistic account offered in the provider's documentation, in support of its systemic-risk assessment and mitigation under Art. 55(1)(b), correctly explains a specified safety-relevant behaviour of the deployed model (for example, how the model comes to refuse a category of dangerous requests).**"
           },
           {
             "id": "D1-01",
             "type": "allocation",
             "label": "Sources of limitation",
             "required": true,
-            "question": "Allocate 100% across the codes below in proportion to how much each currently limits the verification of the D1 anchor claim in the reference scenario.",
+            "question": "Allocate 100% across the codes below in proportion to how much each currently limits the verification of the D1 anchor claim by the AI Office or an independent expert acting for it. Answer for the situation today: this item comes before the reference scenario, so do not assume any particular access.",
             "codes": [
               {
                 "value": "L",
                 "code": "L",
                 "label": "Legal entitlement missing",
-                "description": "No legal provision gives the relevant actor the access the evidence requires."
+                "description": "No legal provision gives the AI Office, or an expert acting for it, the access the evidence requires. Any access depends on the provider volunteering it."
               },
               {
                 "value": "V",
                 "code": "V",
                 "label": "Provider cooperation",
-                "description": "The access exists only on terms the provider agrees to."
+                "description": "A legal route to the access exists, but in practice the provider controls its scope, timing or which evidence is shared."
               },
               {
                 "value": "T",
@@ -576,6 +564,18 @@ const FORMS = {
                 "description": "The claim can be adequately verified today."
               }
             ]
+          },
+          {
+            "id": "D1_scenario",
+            "type": "info",
+            "label": "Reference scenario",
+            "component": "ReferenceScenario"
+          },
+          {
+            "id": "D1_glossary",
+            "type": "info",
+            "label": "Glossary",
+            "component": "Glossary"
           },
           {
             "id": "D1-02",
@@ -630,15 +630,15 @@ const FORMS = {
             "type": "estimate",
             "label": "Access to evidence",
             "required": true,
-            "stem": "Under the AI Act as currently in force (in particular Arts. 91–92), the Article 92 expert needs **activation-level access to the deployed checkpoint and the ability to intervene on internal components** to run the D1 techniques.",
-            "question": "How many of 100 reviewers would conclude that the expert can obtain this access **as of right**, rather than only on terms the provider agrees to?"
+            "stem": "Under EU law as currently in force, the Article 92 expert needs **activation-level access to the deployed checkpoint and the ability to intervene on internal components** to run the D1 techniques. The expert has no access powers of their own: access comes through the Commission's powers under Arts. 91–92 of the AI Act and Implementing Regulation (EU) 2026/1755.",
+            "question": "How many of 100 reviewers would conclude that the expert, through the Commission's powers, can obtain this access **as of right**, rather than only on terms the provider agrees to?"
           },
           {
             "id": "D1-09",
             "type": "estimate",
             "label": "Access entitlement",
             "required": true,
-            "stem": "Suppose a binding **controlled-evaluator-access entitlement** existed. The appointed expert receives the access in D1-08 in a secure environment, analysis artefacts are preserved for re-analysis, and results can be shared with the AI Office and, under confidentiality, with a qualified challenger.",
+            "stem": "Suppose new legislation created a binding **controlled-evaluator-access entitlement** (see the glossary). The appointed expert receives the access in D1-08 directly, in a secure environment, analysis artefacts are preserved for re-analysis, and results can be shared with the AI Office and, under confidentiality, with a **qualified challenger**, notwithstanding the confidentiality rules of Art. 78.",
             "question": "With this entitlement **alone**, how many of 100 reviewers would judge the D1 anchor claim **adequately verifiable**?"
           },
           {
@@ -646,7 +646,7 @@ const FORMS = {
             "type": "estimate",
             "label": "Access entitlement plus disclosure",
             "required": true,
-            "stem": "Suppose that, **in addition** to the entitlement in D1-09, the provider must submit a **failure-visibility statement** for every interpretability finding it relies on. The statement gives the explanatory target, the method's known failure modes and whether an invalid result would be recognisable as invalid, the alternative specifications tested (e.g. seeds, metrics), and the exact checkpoint analysed.",
+            "stem": "Suppose that, **in addition** to the entitlement in D1-09, the provider must submit, beyond the documentation Annex XI already requires, a **failure-visibility statement** for every interpretability finding it relies on. The statement gives the explanatory target, the method's known failure modes and whether an invalid result would be recognisable as invalid, the alternative specifications tested (e.g. seeds, metrics), and the exact checkpoint analysed.",
             "question": "How many of 100 reviewers would now judge the D1 anchor claim **adequately verifiable**?"
           }
         ]
@@ -657,12 +657,6 @@ const FORMS = {
         "gateField": "D2-01",
         "fields": [
           {
-            "id": "D2_scenario",
-            "type": "info",
-            "label": "Reference scenario",
-            "component": "ReferenceScenario"
-          },
-          {
             "id": "D2_anchor",
             "type": "info",
             "label": "Anchor claim",
@@ -670,29 +664,23 @@ const FORMS = {
             "text": "**Anchor claim (D2).** **The provider's training-data account (Art. 53(1)(a)–(b), Annexes XI–XII) adequately supports its stated claims that (i) identified bias risks in the training data were mitigated and (ii) its use of synthetic data has not materially degraded the model's distributional coverage.**"
           },
           {
-            "id": "D2_glossary",
-            "type": "info",
-            "label": "Glossary",
-            "component": "Glossary"
-          },
-          {
             "id": "D2-01",
             "type": "allocation",
             "label": "Sources of limitation",
             "required": true,
-            "question": "Allocate 100% across the codes in proportion to how much each currently limits the verification of the D2 anchor claim in the reference scenario.",
+            "question": "Allocate 100% across the codes in proportion to how much each currently limits the verification of the D2 anchor claim by the AI Office or an independent expert acting for it. Answer for the situation today: this item comes before the reference scenario, so do not assume any particular access.",
             "codes": [
               {
                 "value": "L",
                 "code": "L",
                 "label": "Legal entitlement missing",
-                "description": "No legal provision gives the relevant actor the access the evidence requires."
+                "description": "No legal provision gives the AI Office, or an expert acting for it, the access the evidence requires. Any access depends on the provider volunteering it."
               },
               {
                 "value": "V",
                 "code": "V",
                 "label": "Provider cooperation",
-                "description": "The access exists only on terms the provider agrees to."
+                "description": "A legal route to the access exists, but in practice the provider controls its scope, timing or which evidence is shared."
               },
               {
                 "value": "T",
@@ -725,6 +713,18 @@ const FORMS = {
                 "description": "The claim can be adequately verified today."
               }
             ]
+          },
+          {
+            "id": "D2_scenario",
+            "type": "info",
+            "label": "Reference scenario",
+            "component": "ReferenceScenario"
+          },
+          {
+            "id": "D2_glossary",
+            "type": "info",
+            "label": "Glossary",
+            "component": "Glossary"
           },
           {
             "id": "D2-02",
@@ -779,15 +779,15 @@ const FORMS = {
             "type": "estimate",
             "label": "Access to evidence",
             "required": true,
-            "stem": "Under the AI Act as currently in force (in particular Arts. 91–92), the Article 92 expert needs **data-regime records**: provenance and curation records, synthetic/real data proportions across training stages, samples of retained training data, scoring and filtering functions, and successive checkpoints.",
-            "question": "How many of 100 reviewers would conclude that the expert can obtain these **as of right**, rather than only on terms the provider agrees to?"
+            "stem": "Under EU law as currently in force, the Article 92 expert needs **data-regime records**: provenance and curation records, synthetic/real data proportions across training stages, samples of retained training data, scoring and filtering functions, and successive checkpoints. The expert has no access powers of their own: access comes through the Commission's powers under Arts. 91–92 of the AI Act and Implementing Regulation (EU) 2026/1755. Take into account limits from other EU law, such as the GDPR where the records contain personal data.",
+            "question": "How many of 100 reviewers would conclude that the expert, through the Commission's powers, can obtain these **as of right**, rather than only on terms the provider agrees to?"
           },
           {
             "id": "D2-09",
             "type": "estimate",
             "label": "Access entitlement",
             "required": true,
-            "stem": "Suppose a binding **controlled-evaluator-access entitlement** existed. The appointed expert receives the records in D2-08 in a secure environment, artefacts are preserved for re-analysis, and results can be shared with the AI Office and, under confidentiality, with a qualified challenger.",
+            "stem": "Suppose new legislation created a binding **controlled-evaluator-access entitlement** (see the glossary). The appointed expert receives the records in D2-08 directly, in a secure environment, artefacts are preserved for re-analysis, and results can be shared with the AI Office and, under confidentiality, with a **qualified challenger**, notwithstanding the confidentiality rules of Art. 78.",
             "question": "With this entitlement **alone**, how many of 100 reviewers would judge the D2 anchor claim **adequately verifiable**?"
           },
           {
@@ -795,7 +795,7 @@ const FORMS = {
             "type": "estimate",
             "label": "Access entitlement plus disclosure",
             "required": true,
-            "stem": "Suppose that, **in addition** to the entitlement in D2-09, the provider must keep and submit a **data-regime and retention record**. It is a versioned record of data origin, the synthetic/real mixture at each training generation, retained real data, the filtering and scoring functions used, and longitudinal evaluations of distributional coverage and subgroup outcomes across successive checkpoints.",
+            "stem": "Suppose that, **in addition** to the entitlement in D2-09, the provider must keep and submit, beyond the documentation Annex XI already requires, a **data-regime and retention record**. It is a versioned record of data origin, the synthetic/real mixture at each training generation, retained real data, the filtering and scoring functions used, and longitudinal evaluations of distributional coverage and subgroup outcomes across successive checkpoints.",
             "question": "How many of 100 reviewers would now judge the D2 anchor claim **adequately verifiable**?"
           }
         ]
@@ -806,42 +806,30 @@ const FORMS = {
         "gateField": "D3-01",
         "fields": [
           {
-            "id": "D3_scenario",
-            "type": "info",
-            "label": "Reference scenario",
-            "component": "ReferenceScenario"
-          },
-          {
             "id": "D3_anchor",
             "type": "info",
             "label": "Anchor claim",
             "variant": "callout",
-            "text": "**Anchor claim (D3).** **The provider's claimed mitigation of a specified normative risk (for example, sycophantic validation of a user's harmful beliefs in sensitive conversations) is supported by evidence for that risk scenario.**"
-          },
-          {
-            "id": "D3_glossary",
-            "type": "info",
-            "label": "Glossary",
-            "component": "Glossary"
+            "text": "**Anchor claim (D3).** **The provider's claimed mitigation of a specified normative risk (for example, sycophantic validation of a user's harmful beliefs in sensitive conversations), offered in its systemic-risk assessment and mitigation under Art. 55(1)(b), is supported by evidence for that risk scenario.**"
           },
           {
             "id": "D3-01",
             "type": "allocation",
             "label": "Sources of limitation",
             "required": true,
-            "question": "Allocate 100% across the codes in proportion to how much each currently limits the verification of the D3 anchor claim in the reference scenario.",
+            "question": "Allocate 100% across the codes in proportion to how much each currently limits the verification of the D3 anchor claim by the AI Office or an independent expert acting for it. Answer for the situation today: this item comes before the reference scenario, so do not assume any particular access.",
             "codes": [
               {
                 "value": "L",
                 "code": "L",
                 "label": "Legal entitlement missing",
-                "description": "No legal provision gives the relevant actor the access the evidence requires."
+                "description": "No legal provision gives the AI Office, or an expert acting for it, the access the evidence requires. Any access depends on the provider volunteering it."
               },
               {
                 "value": "V",
                 "code": "V",
                 "label": "Provider cooperation",
-                "description": "The access exists only on terms the provider agrees to."
+                "description": "A legal route to the access exists, but in practice the provider controls its scope, timing or which evidence is shared."
               },
               {
                 "value": "T",
@@ -874,6 +862,18 @@ const FORMS = {
                 "description": "The claim can be adequately verified today."
               }
             ]
+          },
+          {
+            "id": "D3_scenario",
+            "type": "info",
+            "label": "Reference scenario",
+            "component": "ReferenceScenario"
+          },
+          {
+            "id": "D3_glossary",
+            "type": "info",
+            "label": "Glossary",
+            "component": "Glossary"
           },
           {
             "id": "D3-02",
@@ -928,15 +928,15 @@ const FORMS = {
             "type": "estimate",
             "label": "Access to evidence",
             "required": true,
-            "stem": "Under the AI Act as currently in force (in particular Arts. 91–92), the Article 92 expert needs **the complete principle set and feedback/training records, the protocols of any judge- or debate-based evaluation, and samples of deployment interactions for the risk scenario**.",
-            "question": "How many of 100 reviewers would conclude that the expert can obtain these **as of right**, rather than only on terms the provider agrees to?"
+            "stem": "Under EU law as currently in force, the Article 92 expert needs **the complete principle set and feedback/training records, the protocols of any judge- or debate-based evaluation, and samples of deployment interactions for the risk scenario**. The expert has no access powers of their own: access comes through the Commission's powers under Arts. 91–92 of the AI Act and Implementing Regulation (EU) 2026/1755 and, where they apply to components of the AI system built on the model, Arts. 75(1) and 75a. Take into account limits from other EU law, such as the GDPR for deployment interactions.",
+            "question": "How many of 100 reviewers would conclude that the expert, through the Commission's powers, can obtain these **as of right**, rather than only on terms the provider agrees to?"
           },
           {
             "id": "D3-09",
             "type": "estimate",
             "label": "Access entitlement",
             "required": true,
-            "stem": "Suppose a binding **controlled-evaluator-access entitlement** existed. The appointed expert receives the material in D3-08 in a secure environment, artefacts are preserved for re-analysis, and results can be shared with the AI Office and, under confidentiality, with a qualified challenger.",
+            "stem": "Suppose new legislation created a binding **controlled-evaluator-access entitlement** (see the glossary). The appointed expert receives the material in D3-08 directly, in a secure environment, artefacts are preserved for re-analysis, and results can be shared with the AI Office and, under confidentiality, with a **qualified challenger**, notwithstanding the confidentiality rules of Art. 78.",
             "question": "With this entitlement **alone**, how many of 100 reviewers would judge the D3 anchor claim **adequately verifiable**?"
           },
           {
@@ -944,7 +944,7 @@ const FORMS = {
             "type": "estimate",
             "label": "Access entitlement plus disclosure",
             "required": true,
-            "stem": "Suppose that, **in addition** to the entitlement in D3-09, the provider must submit a **normative-specification disclosure**. It states the principles or reference criteria used for the risk scenario, how conflicts between principles were resolved, which scenarios and user populations were tested, and a procedure through which qualified parties can challenge the specification.",
+            "stem": "Suppose that, **in addition** to the entitlement in D3-09, the provider must submit, beyond the documentation Annex XI already requires, a **normative-specification disclosure**. It states the principles or reference criteria used for the risk scenario, how conflicts between principles were resolved, which scenarios and user populations were tested, and a procedure through which qualified parties can challenge the specification.",
             "question": "How many of 100 reviewers would now judge the D3 anchor claim **adequately verifiable**?"
           }
         ]
@@ -955,42 +955,30 @@ const FORMS = {
         "gateField": "D4-01",
         "fields": [
           {
-            "id": "D4_scenario",
-            "type": "info",
-            "label": "Reference scenario",
-            "component": "ReferenceScenario"
-          },
-          {
             "id": "D4_anchor",
             "type": "info",
             "label": "Anchor claim",
             "variant": "callout",
-            "text": "**Anchor claim (D4).** **The provider's jailbreak mitigation reduces the identified risk (universal jailbreaks that elicit serious CBRN uplift) under the stated conditions, for the configuration actually deployed.**"
-          },
-          {
-            "id": "D4_glossary",
-            "type": "info",
-            "label": "Glossary",
-            "component": "Glossary"
+            "text": "**Anchor claim (D4).** **The provider's jailbreak mitigation, offered in its model evaluation and systemic-risk mitigation under Art. 55(1)(a)–(b), reduces the identified risk (universal jailbreaks that elicit serious CBRN uplift) under the stated conditions, for the configuration actually deployed.**"
           },
           {
             "id": "D4-01",
             "type": "allocation",
             "label": "Sources of limitation",
             "required": true,
-            "question": "Allocate 100% across the codes in proportion to how much each currently limits the verification of the D4 anchor claim in the reference scenario.",
+            "question": "Allocate 100% across the codes in proportion to how much each currently limits the verification of the D4 anchor claim by the AI Office or an independent expert acting for it. Answer for the situation today: this item comes before the reference scenario, so do not assume any particular access.",
             "codes": [
               {
                 "value": "L",
                 "code": "L",
                 "label": "Legal entitlement missing",
-                "description": "No legal provision gives the relevant actor the access the evidence requires."
+                "description": "No legal provision gives the AI Office, or an expert acting for it, the access the evidence requires. Any access depends on the provider volunteering it."
               },
               {
                 "value": "V",
                 "code": "V",
                 "label": "Provider cooperation",
-                "description": "The access exists only on terms the provider agrees to."
+                "description": "A legal route to the access exists, but in practice the provider controls its scope, timing or which evidence is shared."
               },
               {
                 "value": "T",
@@ -1023,6 +1011,18 @@ const FORMS = {
                 "description": "The claim can be adequately verified today."
               }
             ]
+          },
+          {
+            "id": "D4_scenario",
+            "type": "info",
+            "label": "Reference scenario",
+            "component": "ReferenceScenario"
+          },
+          {
+            "id": "D4_glossary",
+            "type": "info",
+            "label": "Glossary",
+            "component": "Glossary"
           },
           {
             "id": "D4-02",
@@ -1077,15 +1077,15 @@ const FORMS = {
             "type": "estimate",
             "label": "Access to evidence",
             "required": true,
-            "stem": "Under the AI Act as currently in force (in particular Arts. 91–92), the Article 92 expert needs **the deployed guarded configuration** (model version, classifier thresholds, system prompt, tools), **unrestricted adaptive-attack access with knowledge of the defence design**, and **the provider's own red-teaming and grading records**.",
-            "question": "How many of 100 reviewers would conclude that the expert can obtain these **as of right**, rather than only on terms the provider agrees to?"
+            "stem": "Under EU law as currently in force, the Article 92 expert needs **the deployed guarded configuration** (model version, classifier thresholds, system prompt, tools), **unrestricted adaptive-attack access with knowledge of the defence design**, and **the provider's own red-teaming and grading records**. The expert has no access powers of their own: access comes through the Commission's powers under Arts. 91–92 of the AI Act and Implementing Regulation (EU) 2026/1755 and, where they apply to components of the AI system built on the model, Arts. 75(1) and 75a.",
+            "question": "How many of 100 reviewers would conclude that the expert, through the Commission's powers, can obtain these **as of right**, rather than only on terms the provider agrees to?"
           },
           {
             "id": "D4-09",
             "type": "estimate",
             "label": "Access entitlement",
             "required": true,
-            "stem": "Suppose a binding **controlled-evaluator-access entitlement** existed. The appointed expert receives the access and records in D4-08 in a secure environment, configurations and graded outcomes are preserved for re-analysis, and results can be shared with the AI Office and, under confidentiality, with a qualified challenger.",
+            "stem": "Suppose new legislation created a binding **controlled-evaluator-access entitlement** (see the glossary). The appointed expert receives the access and records in D4-08 directly, in a secure environment, configurations and graded outcomes are preserved for re-analysis, and results can be shared with the AI Office and, under confidentiality, with a **qualified challenger**, notwithstanding the confidentiality rules of Art. 78.",
             "question": "With this entitlement **alone**, how many of 100 reviewers would judge the D4 anchor claim **adequately verifiable**?"
           },
           {
@@ -1093,7 +1093,7 @@ const FORMS = {
             "type": "estimate",
             "label": "Access entitlement plus disclosure",
             "required": true,
-            "stem": "Suppose that, **in addition** to the entitlement in D4-09, every robustness claim must be accompanied by a **declared threat model**. It states the attacker's access tier (query, fine-tuning or weights), the attacker's knowledge of the defence, budget, success criterion and grader, the configuration and date tested, and whether attacks were adapted to the defence. It also includes a duty to re-test after any material change to the configuration.",
+            "stem": "Suppose that, **in addition** to the entitlement in D4-09, every robustness claim must be accompanied, beyond the documentation Annex XI already requires, by a **declared threat model**. It states the attacker's access tier (query, fine-tuning or weights), the attacker's knowledge of the defence, budget, success criterion and grader, the configuration and date tested, and whether attacks were adapted to the defence. It also includes a duty to re-test after any material change to the configuration.",
             "question": "How many of 100 reviewers would now judge the D4 anchor claim **adequately verifiable**?"
           }
         ]
@@ -1118,7 +1118,7 @@ const FORMS = {
     ],
     "itemMeta": {
       "round": 1,
-      "itemVersion": "1.0",
+      "itemVersion": "1.1",
       "items": {
         "D1-01": {
           "item_type": "diagnosis",

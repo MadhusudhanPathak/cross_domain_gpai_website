@@ -13,7 +13,7 @@ export const referenceScenario =
 /** Part B §B.1 of the questionnaire, split so the component can lay out the tables. */
 export const instructions = {
   intro:
-    "You will assess 40 items in four blocks, one per technical domain. All items refer to the same situation, the **reference scenario**:",
+    "You will assess 40 items in four blocks, one per technical domain. Items 02–10 in each block refer to the same situation, the **reference scenario**:",
   countQuestion: "**Most items ask you to estimate a count:**\n\n**Of 100 well-informed, independent reviewers given this evidence, how many would accept…?**",
   reviewer:
     "A **well-informed, independent reviewer** understands both the technical method and EU AI Act compliance assessment and has no ties to the provider. You are not being asked whether **you** accept the claim, but how such reviewers as a group would judge it.",
@@ -28,7 +28,7 @@ export const instructions = {
   outsideCompetence:
     "Tick **Outside my competence** instead if you cannot give an informed estimate. This is preferred to guessing.",
   allocation:
-    "The first item in each domain asks you to **allocate 100%** across the constraint codes below, in proportion to how much each currently limits verification of that domain's anchor claim, and to give one confidence rating (50–100%). The percentages must add up to exactly 100% before you can answer the rest of that domain.",
+    "The first item in each domain asks you to **allocate 100%** across the constraint codes below, in proportion to how much each currently limits verification of that domain's anchor claim, and to give one confidence rating (50–100%). The percentages must add up to exactly 100% before you can answer the rest of that domain. Item 01 comes before the reference scenario on each domain page: answer it for the situation today, without assuming the scenario's access.",
   rationaleNote:
     "Rationales are shared anonymously with other participants in Round 2. Please do not include your name, organisation or other identifying details in them.",
   closing: "Your answers record expert opinion; they do not determine what the law requires.",
@@ -58,7 +58,18 @@ export const glossaryDefinitions: GlossaryEntry[] = [
   },
   {
     term: "Article 92 expert",
-    definition: "The independent expert appointed under Article 92 of the AI Act who carries out the technical evaluation.",
+    definition:
+      "The independent expert appointed by the Commission under Article 92(2) of the AI Act to carry out the technical evaluation on its behalf. The expert has no access powers of their own; access comes through the Commission.",
+  },
+  {
+    term: "Controlled-evaluator-access entitlement",
+    definition:
+      "A hypothetical right, created by new legislation, for the appointed expert to receive directly the access or records an evaluation needs, in a secure environment, with analysis artefacts preserved for re-analysis. It goes beyond the Commission's current powers under Arts. 91–92 and Implementing Regulation (EU) 2026/1755.",
+  },
+  {
+    term: "Qualified challenger",
+    definition:
+      "An independent party with the relevant expertise who receives the evidence and results under confidentiality, so that it can check or contest them. Under the entitlement, this sharing is allowed notwithstanding the confidentiality rules of Art. 78.",
   },
   {
     term: "Reference scenario",
@@ -68,8 +79,17 @@ export const glossaryDefinitions: GlossaryEntry[] = [
 
 /** Constraint codes used in item 01 of each domain. Must match the `codes` of the allocation items in `round1.json` (checked by a test). */
 export const constraintCodes = [
-  { code: "L", label: "Legal entitlement missing", description: "No legal provision gives the relevant actor the access the evidence requires." },
-  { code: "V", label: "Provider cooperation", description: "The access exists only on terms the provider agrees to." },
+  {
+    code: "L",
+    label: "Legal entitlement missing",
+    description:
+      "No legal provision gives the AI Office, or an expert acting for it, the access the evidence requires. Any access depends on the provider volunteering it.",
+  },
+  {
+    code: "V",
+    label: "Provider cooperation",
+    description: "A legal route to the access exists, but in practice the provider controls its scope, timing or which evidence is shared.",
+  },
   { code: "T", label: "Technical validation", description: "The method is not yet validated for this use, scale or setting." },
   { code: "E", label: "Narrower evidence", description: "Even when well executed, the method establishes something narrower than, or different from, the claim." },
   { code: "N", label: "Under-specified criterion", description: "The standard the claim must meet (e.g. what counts as fair or appropriate) is not sufficiently specified or agreed." },
