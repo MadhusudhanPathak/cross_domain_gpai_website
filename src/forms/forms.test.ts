@@ -43,6 +43,11 @@ describe("round1 questionnaire", () => {
     expect(round1Meta.formId).toBe(form.id);
   });
 
+  it("resets only fields that exist in the form when a draft from another version is restored", () => {
+    const ids = new Set(form.sections.flatMap((s) => s.fields).map((f) => f.id));
+    for (const id of form.resetOnUpgrade ?? []) expect(ids.has(id)).toBe(true);
+  });
+
   it("never shows internal analysis labels to participants", () => {
     const text = JSON.stringify(round1Json);
     const internal = /bounded weight|disputed transfer|domain diagnosis|shared remedy|specific remedy|access status|mainstream|underdog|overreach|hypothes|ledger|G\d\d\b/i;

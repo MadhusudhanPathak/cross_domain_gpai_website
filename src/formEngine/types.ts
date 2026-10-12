@@ -118,6 +118,8 @@ export type FormDef = {
   stepNav?: boolean;
   /** Markdown shown on the confirmation page instead of the default "we will be in touch" line. */
   doneMessage?: string;
+  /** Field ids reworded since an earlier `version`. A draft saved under another version is restored without their answers. */
+  resetOnUpgrade?: string[];
   sections: Section[];
 };
 

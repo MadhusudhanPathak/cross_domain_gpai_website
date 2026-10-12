@@ -48,10 +48,36 @@ function readJson(storage: () => Storage, key: string): unknown {
 const local = () => localStorage;
 const session = () => sessionStorage;
 
-export function loadLocalDraft(formId: string, version: string): LocalDraft | null {
-  const parsed = readJson(local, draftKey(formId, version));
+function readDraft(key: string): LocalDraft | null {
+  const parsed = readJson(local, key);
   if (!isRecord(parsed) || !isRecord(parsed.data)) return null;
   return { data: parsed.data, savedAt: String(parsed.savedAt ?? "") };
+}
+
+function keys(storage: () => Storage): string[] {
+  try {
+    const s = storage();
+    return Array.from({ length: s.length }, (_, i) => s.key(i)).filter((k): k is string => k !== null);
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * The draft saved under `version`; failing that, the newest draft of this form saved under any other version,
+ * which the caller must upgrade. `version` in the result says which one was found.
+ */
+export function loadLocalDraft(formId: string, version: string): (LocalDraft & { version: string }) | null {
+  const current = readDraft(draftKey(formId, version));
+  if (current) return { ...current, version };
+  const prefix = draftKey(formId, "");
+  let newest: (LocalDraft & { version: string }) | null = null;
+  for (const key of keys(local)) {
+    if (!key.startsWith(prefix)) continue;
+    const draft = readDraft(key);
+    if (draft && (!newest || draft.savedAt > newest.savedAt)) newest = { ...draft, version: key.slice(prefix.length) };
+  }
+  return newest;
 }
 
 export function saveLocalDraft(formId: string, version: string, data: FormData): void {
