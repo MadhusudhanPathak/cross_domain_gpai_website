@@ -2,6 +2,7 @@ import { useEffect, type ComponentType } from "react";
 import { asAllocation, asEstimate } from "../../formEngine/items";
 import type { Field, FieldOf, FormData } from "../../formEngine/types";
 import { isRecord } from "../../utils/guards";
+import { linkableTerms, referencePath } from "../../content/delphi";
 import { MarkdownLite } from "../MarkdownLite";
 import { ProcessOverview } from "../ProcessOverview";
 import { DelphiInstructions, Glossary, ReferenceScenario } from "../delphi/DelphiInfo";
@@ -26,7 +27,7 @@ type Props = {
 };
 
 /** Components that an `info` field may embed via its `component` property. */
-const INFO_COMPONENTS: Record<string, ComponentType> = {
+const INFO_COMPONENTS: Record<string, ComponentType<{ fieldId?: string }>> = {
   ProcessOverview,
   ReferenceScenario,
   Glossary,
@@ -73,7 +74,15 @@ export function FieldRenderer({ field, data, setField, error }: Props) {
       const Embedded = field.component ? INFO_COMPONENTS[field.component] : undefined;
       return (
         <div className={field.variant === "callout" ? "field callout" : "field"} id={field.id}>
-          {Embedded ? <Embedded /> : field.text ? <MarkdownLite text={field.text} /> : null}
+          {Embedded ? (
+            <Embedded fieldId={field.id} />
+          ) : field.text ? (
+            <MarkdownLite
+              text={field.text}
+              terms={field.variant === "callout" ? linkableTerms : undefined}
+              referenceHref={referencePath}
+            />
+          ) : null}
         </div>
       );
     }

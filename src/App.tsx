@@ -5,6 +5,7 @@ import { Process } from "./pages/Process";
 import { FormPage } from "./pages/FormPage";
 import { Done } from "./pages/Done";
 import { Privacy } from "./pages/Privacy";
+import { Reference } from "./pages/Reference";
 import { NotFound } from "./pages/NotFound";
 
 export function App() {
@@ -16,6 +17,7 @@ export function App() {
         <Route path="/forms/:formId/done">{(params) => <Done formId={params.formId} />}</Route>
         <Route path="/forms/:formId">{(params) => <FormPage formId={params.formId} />}</Route>
         <Route path="/privacy" component={Privacy} />
+        <Route path="/reference" component={Reference} />
         <Route>
           <NotFound />
         </Route>

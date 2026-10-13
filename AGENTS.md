@@ -44,13 +44,13 @@ Data flow: `pages/FormPage` → `components/form/FormRenderer` → `services/api
 - `layout/`: the page shell (header, footer, skip link).
 - `form/`: `FormRenderer` runs the step-by-step flow (which step is shown, when to validate, submission). Next always validates the current step and blocks on errors; with `stepNav`, the step bar only jumps forward to steps whose earlier steps are complete; a section's `gateField` disables the fields after it until it is valid. `DraftBar` and `ResumeDialog` handle server drafts. `FormParts` holds small presentational pieces: the draft banner, progress bars, step bar, honeypot and closed notice.
 - `fields/`: one component per field type. `FieldRenderer` maps a field's `type` to a component and coerces stored values to the expected shape. `FieldShell` provides the shared label, help and error markup, including the ARIA wiring. `EstimateField` (four-step) and `AllocationField` (100% across codes) share `ItemParts`.
-- `delphi/`: blocks that the questionnaire embeds through `info` fields (`component`): instructions, reference scenario and glossary (with the briefing pack link). Their copy lives in `content/delphi.ts`.
-- `MarkdownLite` renders the copy: paragraphs, dash lists, `**bold**` and links. It has no italics by design.
+- `delphi/`: blocks that the questionnaire embeds through `info` fields (`component`): instructions, reference scenario and glossary (with the briefing pack and reference page links). The glossary on a domain page lists that domain's techniques first. Their copy lives in `content/delphi.ts`, which also holds the plain-language explanations of techniques, technical, legal and study terms; they say what a term means, not how well a method works.
+- `MarkdownLite` renders the copy: paragraphs, dash lists, `**bold**` and links. It has no italics by design. Given `terms`, it turns the first mention of each term (its `matches` phrases) into a button that shows the definition below the text; item stems, questions, anchor claims and the reference scenario use this.
 - **Boundaries:** components call `services/` only through hooks or event handlers. Field components receive `value` and `onChange` and never read the full form data themselves.
 
 ### `src/pages/`, `src/content/`, `src/config.ts`
 
-- `pages/`: one component per route. They are thin and delegate to components.
+- `pages/`: one component per route. They are thin and delegate to components. `Reference` (`/reference`) lists every glossary entry with an anchor per term.
 - `content/`: owner-editable copy. Components read from here instead of hard-coding study details.
 - `config.ts`: runtime settings (backend URL, timeouts). This is the only place that reads `import.meta.env`.
 
