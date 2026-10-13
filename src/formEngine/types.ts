@@ -113,6 +113,7 @@ export type FormDef = {
   submitLabel: string;
   /** Name of the Google Sheet tab that stores submissions. */
   sheet: string;
+  /** "panel": only people whose email appears in the expression of interest may submit or save drafts (checked by the server). */
   access: "open" | "panel";
   /** When true, shows a bar of all steps. People can jump back freely, and forward only to steps whose earlier steps are all complete. */
   stepNav?: boolean;

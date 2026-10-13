@@ -1,4 +1,5 @@
 import { RATIONALE_MAX_CHARS, RATIONALE_MAX_WORDS, RATIONALE_SOFT_WORDS, wordCount } from "../../formEngine/items";
+import { linkableTerms, referencePath } from "../../content/delphi";
 import { MarkdownLite } from "../MarkdownLite";
 import { describedBy, invalidAttr } from "./FieldShell";
 
@@ -15,11 +16,11 @@ export function ItemText({ id, title, stem, question }: { id: string; title: str
       </legend>
       {stem && (
         <div className="item__stem">
-          <MarkdownLite text={stem} />
+          <MarkdownLite text={stem} terms={linkableTerms} referenceHref={referencePath} />
         </div>
       )}
       <div className="item__question" id={questionIdFor(id)}>
-        <MarkdownLite text={question} />
+        <MarkdownLite text={question} terms={linkableTerms} referenceHref={referencePath} />
       </div>
     </>
   );

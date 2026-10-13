@@ -8,6 +8,7 @@ import { firstSectionWithError, isVisible, stripHidden, visibleFields, visibleSe
 import { useFormState } from "../../hooks/useFormState";
 import { useFormStatus } from "../../hooks/useFormStatus";
 import { useLocalDraftAutosave } from "../../hooks/useLocalDraftAutosave";
+import { useRegistrationCheck } from "../../hooks/useRegistrationCheck";
 import { call, type SubmitResponse } from "../../services/api";
 import { clearLocalDraft, loadLocalDraft, saveDoneInfo, saveLocalDraft } from "../../services/storage";
 import { uuid } from "../../utils/uuid";
@@ -15,7 +16,7 @@ import { MarkdownLite } from "../MarkdownLite";
 import { FieldRenderer } from "../fields/FieldRenderer";
 import { DraftBar } from "./DraftBar";
 import { ErrorSummary } from "./ErrorSummary";
-import { CompletionBar, DraftBanner, FormClosed, Honeypot, StepNav, StepProgress } from "./FormParts";
+import { CompletionBar, DraftBanner, FormClosed, Honeypot, RegistrationNotice, StepNav, StepProgress } from "./FormParts";
 
 const HONEYPOT_KEY = "__hp";
 
@@ -44,6 +45,7 @@ export function FormRenderer({ form }: { form: FormDef }) {
   const errorRef = useRef<HTMLDivElement | null>(null);
 
   const formStatus = useFormStatus(form.id);
+  const registration = useRegistrationCheck(form, data.email);
   useLocalDraftAutosave(form.id, form.version, data);
 
   // A draft saved under an earlier version is moved to the current one at once, so leaving before the next autosave loses nothing.
@@ -113,10 +115,17 @@ export function FormRenderer({ form }: { form: FormDef }) {
     <FieldRenderer key={field.id} field={field} data={data} setField={setField} error={errors[field.id]} />
   );
 
+  // Leaving the step that asks for the email checks it against the expressions of interest (panel forms only).
+  const emailStep = sections.findIndex((s) => s.fields.some((f) => f.type === "email"));
+  async function moveTo(target: number) {
+    if (emailStep >= 0 && step <= emailStep && target > emailStep && !(await registration.ensureRegistered())) return;
+    setStepIndex(target);
+  }
+
   function goNext() {
     const sectionErrors = validateSection(currentSection, data);
     setErrors(sectionErrors);
-    if (!hasErrors(sectionErrors) && !isLastStep) setStepIndex(step + 1);
+    if (!hasErrors(sectionErrors) && !isLastStep) void moveTo(step + 1);
   }
 
   function goBack() {
@@ -168,6 +177,9 @@ export function FormRenderer({ form }: { form: FormDef }) {
         commitment: optionalString(data.commitment),
       });
       navigate(`/forms/${form.id}/done`);
+    } else if (res.code === "NOT_REGISTERED") {
+      registration.markMissing();
+      if (emailStep >= 0) setStepIndex(emailStep);
     } else if (res.code === "VALIDATION" && res.fieldErrors) {
       showErrors(res.fieldErrors);
     } else {
@@ -201,7 +213,7 @@ export function FormRenderer({ form }: { form: FormDef }) {
           current={step}
           onSelect={(i) => {
             setErrors({});
-            setStepIndex(i);
+            void moveTo(i);
           }}
         />
       )}
@@ -209,6 +221,8 @@ export function FormRenderer({ form }: { form: FormDef }) {
       {currentSection.description && <p className="field__help">{currentSection.description}</p>}
 
       <ErrorSummary ref={errorRef} errors={errors} fields={fields} />
+
+      {registration.missingEmail && <RegistrationNotice email={registration.missingEmail} />}
 
       {submitError && (
         <div className="alert alert--danger" role="alert">
@@ -253,8 +267,8 @@ export function FormRenderer({ form }: { form: FormDef }) {
               {submitting ? "Sending..." : form.submitLabel}
             </button>
           ) : (
-            <button type="submit" className="button button--primary">
-              Next
+            <button type="submit" className="button button--primary" disabled={registration.checking}>
+              {registration.checking ? "Checking..." : "Next"}
             </button>
           )}
         </div>

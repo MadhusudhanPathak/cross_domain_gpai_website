@@ -1,4 +1,24 @@
+import { Link } from "wouter";
 import { ContactLink } from "../ContactLink";
+
+/** Shown when the email entered is not among the expressions of interest, which a panel form requires. */
+export function RegistrationNotice({ email }: { email: string }) {
+  return (
+    <div className="alert alert--danger" role="alert">
+      <p>
+        We could not find <strong>{email}</strong> among the expressions of interest. Taking part requires the expression of
+        interest first.
+      </p>
+      <ul>
+        <li>If you have already filled it in, enter the email address you used there.</li>
+        <li>If you have not, please fill it in first and then come back. Your answers here are kept in this browser.</li>
+      </ul>
+      <Link href="/forms/interest" className="button button--secondary">
+        Fill in the expression of interest
+      </Link>
+    </div>
+  );
+}
 
 /** Notice shown when the local draft for this form was restored on load. */
 export function DraftBanner({ onKeep, onDiscard }: { onKeep: () => void; onDiscard: () => void }) {

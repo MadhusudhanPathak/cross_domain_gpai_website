@@ -20,6 +20,7 @@ export function Home() {
           Round 1 questionnaire
         </Link>
       </div>
+      <p className="field__help">Round 1 is open to people who have filled in the expression of interest.</p>
 
       <h2>The process at a glance</h2>
       <ProcessOverview />

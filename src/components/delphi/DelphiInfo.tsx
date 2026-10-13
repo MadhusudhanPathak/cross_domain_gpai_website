@@ -1,12 +1,19 @@
 import {
   briefingPackUrl,
   constraintCodes,
+  domainNames,
   glossaryDefinitions,
+  glossaryLegalTerms,
   glossaryTechnicalTerms,
+  glossaryTechniques,
   instructions,
+  linkableTerms,
+  referencePath,
   referenceScenario,
+  type Domain,
   type GlossaryEntry,
 } from "../../content/delphi";
+import { termSlug } from "../../utils/terms";
 import { MarkdownLite } from "../MarkdownLite";
 
 /** Static blocks embedded in the Delphi questionnaire through `info` fields (`component`). Copy comes from `content/delphi.ts`. */
@@ -23,21 +30,38 @@ export function BriefingPackLink() {
   );
 }
 
+/** Links to the briefing pack and to the reference page, both in a new tab so the questionnaire keeps its place. */
+export function ReferenceLinks() {
+  return (
+    <>
+      <BriefingPackLink />
+      <p>
+        <a href={referencePath} target="_blank" rel="noopener noreferrer">
+          Open the reference page
+        </a>{" "}
+        (opens in a new tab): every technique, term and code in plain language. You can also select an underlined term in
+        a question to see its definition.
+      </p>
+    </>
+  );
+}
+
 /** Reference scenario printed at the top of every domain page. Collapsible, expanded by default. */
 export function ReferenceScenario() {
   return (
     <details className="callout" open>
       <summary>Reference scenario</summary>
-      <MarkdownLite text={referenceScenario} />
+      <MarkdownLite text={referenceScenario} terms={linkableTerms} referenceHref={referencePath} />
     </details>
   );
 }
 
-function GlossaryList({ entries }: { entries: GlossaryEntry[] }) {
+/** Definition list of glossary entries. With `anchors`, each entry gets an id so links can point to it. */
+export function GlossaryList({ entries, anchors = false }: { entries: GlossaryEntry[]; anchors?: boolean }) {
   return (
     <dl className="glossary__list">
       {entries.map((e) => (
-        <div key={e.term}>
+        <div key={e.term} id={anchors ? termSlug(e.term) : undefined}>
           <dt>{e.term}</dt>
           <dd>
             <MarkdownLite text={e.definition} />
@@ -48,18 +72,35 @@ function GlossaryList({ entries }: { entries: GlossaryEntry[] }) {
   );
 }
 
-/** Collapsed glossary panel: definitions, constraint codes and technical terms. */
-export function Glossary() {
+export const constraintCodeEntries: GlossaryEntry[] = constraintCodes.map((c) => ({
+  term: `${c.code}: ${c.label}`,
+  definition: c.description,
+}));
+
+/** The domain a domain-page field belongs to, from its id (e.g. "D2_glossary"). */
+const domainOf = (fieldId: string | undefined): Domain | undefined => {
+  const m = /^(D[1-4])_/.exec(fieldId ?? "");
+  return m ? (m[1] as Domain) : undefined;
+};
+
+/** Collapsed glossary panel. On a domain page it lists that domain's techniques and terms first. */
+export function Glossary({ fieldId }: { fieldId?: string }) {
+  const domain = domainOf(fieldId);
+  const inDomain = (e: GlossaryEntry) => !domain || !e.domain || e.domain === domain;
   return (
     <details className="glossary">
       <summary>Glossary and briefing pack</summary>
-      <BriefingPackLink />
+      <ReferenceLinks />
+      <h3>{domain ? `Techniques in ${domainNames[domain]}` : "Techniques"}</h3>
+      <GlossaryList entries={glossaryTechniques.filter(inDomain)} />
+      <h3>Technical terms</h3>
+      <GlossaryList entries={glossaryTechnicalTerms.filter(inDomain)} />
       <h3>Definitions</h3>
       <GlossaryList entries={glossaryDefinitions} />
+      <h3>Legal terms</h3>
+      <GlossaryList entries={glossaryLegalTerms} />
       <h3>Constraint codes</h3>
-      <GlossaryList entries={constraintCodes.map((c) => ({ term: `${c.code}: ${c.label}`, definition: c.description }))} />
-      <h3>Technical terms</h3>
-      <GlossaryList entries={glossaryTechnicalTerms} />
+      <GlossaryList entries={constraintCodeEntries} />
     </details>
   );
 }
@@ -118,7 +159,7 @@ export function DelphiInstructions() {
         </tbody>
       </table>
       <MarkdownLite text={instructions.closing} />
-      <BriefingPackLink />
+      <ReferenceLinks />
     </div>
   );
 }
