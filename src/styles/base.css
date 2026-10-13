@@ -767,6 +767,16 @@ input:disabled { opacity: 0.5; cursor: not-allowed; }
 .char-count--error { color: var(--danger); font-weight: 600; }
 
 .alloc { margin-bottom: 1rem; }
+.alloc__group-heading {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 0.8em 0 0.2em;
+}
+.alloc__divider {
+  border: none;
+  border-top: 2px solid var(--rule);
+  margin: 0.6em 0;
+}
 .alloc__row {
   display: flex;
   align-items: center;

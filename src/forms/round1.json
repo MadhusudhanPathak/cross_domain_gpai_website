@@ -2,7 +2,7 @@
   "id": "round1",
   "version": "1.1.0",
   "title": "Expert elicitation on evidence and verification for general-purpose AI",
-  "intro": "**Before you start:** Round 1 is for people who have filled in the expression of interest. Enter the same email address you used there; we check it before you continue.\n\nRound 1 questionnaire: 40 items in four domain blocks. It takes a focused sittings of about 40–50 minutes in total, and you may pause at any time: your answers are kept in this browser, and \"Save and continue later\" lets you resume on another device. Best completed on a computer.",
+  "intro": "**Before you start: Round 1 is for people who have filled in the expression of interest. If you have not filled the expression of interest, please do it now before starting with Round 1.**\n\nRound 1 questionnaire: 40 items in four domain blocks. It takes a focused sittings of about 40–50 minutes in total, and you may pause at any time: your answers are kept in this browser, and \"Save and continue later\" lets you resume on another device. Best completed on a computer.",
   "estimatedMinutes": 45,
   "submitLabel": "Send my Round 1 answers",
   "sheet": "Round1",
@@ -98,6 +98,12 @@
           "question": "Allocate 100% across the codes below in proportion to how much each currently limits the verification of the D1 anchor claim by the AI Office or an independent expert acting for it. Answer for the situation today: this item comes before the reference scenario, so do not assume any particular access.",
           "codes": [
             {
+              "value": "none",
+              "code": "Ø",
+              "label": "There is no limit to the verification",
+              "description": "The claim can be adequately checked and all aspects are good."
+            },
+            {
               "value": "L",
               "code": "L",
               "label": "Legal entitlement missing",
@@ -132,12 +138,6 @@
               "code": "O",
               "label": "Operational capacity",
               "description": "The bodies involved lack the resources, expertise or procedures to verify in practice."
-            },
-            {
-              "value": "none",
-              "code": "Ø",
-              "label": "Not materially limited",
-              "description": "The claim can be adequately verified today."
             }
           ]
         },
@@ -247,6 +247,12 @@
           "question": "Allocate 100% across the codes in proportion to how much each currently limits the verification of the D2 anchor claim by the AI Office or an independent expert acting for it. Answer for the situation today: this item comes before the reference scenario, so do not assume any particular access.",
           "codes": [
             {
+              "value": "none",
+              "code": "Ø",
+              "label": "There is no limit to the verification",
+              "description": "The claim can be adequately checked and all aspects are good."
+            },
+            {
               "value": "L",
               "code": "L",
               "label": "Legal entitlement missing",
@@ -281,12 +287,6 @@
               "code": "O",
               "label": "Operational capacity",
               "description": "The bodies involved lack the resources, expertise or procedures to verify in practice."
-            },
-            {
-              "value": "none",
-              "code": "Ø",
-              "label": "Not materially limited",
-              "description": "The claim can be adequately verified today."
             }
           ]
         },
@@ -396,6 +396,12 @@
           "question": "Allocate 100% across the codes in proportion to how much each currently limits the verification of the D3 anchor claim by the AI Office or an independent expert acting for it. Answer for the situation today: this item comes before the reference scenario, so do not assume any particular access.",
           "codes": [
             {
+              "value": "none",
+              "code": "Ø",
+              "label": "There is no limit to the verification",
+              "description": "The claim can be adequately checked and all aspects are good."
+            },
+            {
               "value": "L",
               "code": "L",
               "label": "Legal entitlement missing",
@@ -430,12 +436,6 @@
               "code": "O",
               "label": "Operational capacity",
               "description": "The bodies involved lack the resources, expertise or procedures to verify in practice."
-            },
-            {
-              "value": "none",
-              "code": "Ø",
-              "label": "Not materially limited",
-              "description": "The claim can be adequately verified today."
             }
           ]
         },
@@ -545,6 +545,12 @@
           "question": "Allocate 100% across the codes in proportion to how much each currently limits the verification of the D4 anchor claim by the AI Office or an independent expert acting for it. Answer for the situation today: this item comes before the reference scenario, so do not assume any particular access.",
           "codes": [
             {
+              "value": "none",
+              "code": "Ø",
+              "label": "There is no limit to the verification",
+              "description": "The claim can be adequately checked and all aspects are good."
+            },
+            {
               "value": "L",
               "code": "L",
               "label": "Legal entitlement missing",
@@ -579,12 +585,6 @@
               "code": "O",
               "label": "Operational capacity",
               "description": "The bodies involved lack the resources, expertise or procedures to verify in practice."
-            },
-            {
-              "value": "none",
-              "code": "Ø",
-              "label": "Not materially limited",
-              "description": "The claim can be adequately verified today."
             }
           ]
         },

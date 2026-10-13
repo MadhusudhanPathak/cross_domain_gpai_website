@@ -18,14 +18,12 @@ export type ApiFailure = { ok: false; code: ApiErrorCode; message: string; field
 export type ApiResult<T> = ApiSuccess<T> | ApiFailure;
 
 export type StatusResponse = { open: boolean; closesAt?: string; message?: string };
-export type CheckEmailResponse = { registered: boolean };
 export type SubmitResponse = { submissionId: string; copySent: boolean };
 export type SaveDraftResponse = { savedAt: string; codeEmailed: boolean };
 export type GetDraftResponse = { data: FormData; savedAt: string };
 
 export type ApiRequest =
   | { action: "getStatus"; formId: string }
-  | { action: "checkEmail"; formId: string; email: string }
   | {
       action: "submit";
       formId: string;

@@ -37,7 +37,7 @@ Data flow: `pages/FormPage` → `components/form/FormRenderer` → `services/api
 - `useFormState`: holds the answers object.
 - `useFormStatus`: asks the server whether a form is open.
 - `useLocalDraftAutosave`: debounced local persistence.
-- `useRegistrationCheck`: for forms with `access: "panel"`, checks the email against the expressions of interest before the participant leaves the step that asks for it.
+- `useRegistrationCheck`: tracks the server's `NOT_REGISTERED` response on submit for forms with `access: "panel"`, so the notice clears once the participant changes the email it was for.
 
 ### `src/components/`: presentation
 
@@ -56,7 +56,7 @@ Data flow: `pages/FormPage` → `components/form/FormRenderer` → `services/api
 
 ## Backend (`apps-script/`)
 
-- `Code.gs`: request routing (`doPost`), validation, flattening answers into Sheet columns, idempotent submission (keyed by `submissionId`), superseding earlier rows from the same email, emails, drafts, and `setup()`. Forms with `access: "panel"` accept submissions and draft saves only from emails found in the expression-of-interest sheet (`checkEmail` lets the front end check early). Forms with `estimate`/`allocation` items also get a salted pseudonymous `participant_id` and a `<sheet>_Long` tab with one row per item (no names or emails) for analysis.
+- `Code.gs`: request routing (`doPost`), validation, flattening answers into Sheet columns, idempotent submission (keyed by `submissionId`), superseding earlier rows from the same email, emails, drafts, and `setup()`. Forms with `access: "panel"` accept submissions and draft saves only from emails found in the expression-of-interest sheet. Forms with `estimate`/`allocation` items also get a salted pseudonymous `participant_id` and a `<sheet>_Long` tab with one row per item (no names or emails) for analysis.
 - `Forms.gs`: generated. Do not edit it by hand.
 - `appsscript.json`: the manifest (OAuth scopes and web app access).
 - **Boundaries:** treat every request field as untrusted. Pass values through `cell_()` before writing to the Sheet. Look forms up with `formFor_()`, never `FORMS[id]`.

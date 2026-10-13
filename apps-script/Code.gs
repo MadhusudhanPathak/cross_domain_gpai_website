@@ -1,6 +1,6 @@
 /**
  * GPAI Delphi Study backend. Receives JSON POSTs from the static site and stores them in the bound Sheet.
- * Actions: getStatus, checkEmail, submit, saveDraft, getDraft. Form definitions come from FORMS in Forms.gs.
+ * Actions: getStatus, submit, saveDraft, getDraft. Form definitions come from FORMS in Forms.gs.
  */
 
 /** Entry points ------------------------------------------------------- */
@@ -16,7 +16,6 @@ function doPost(e) {
     if (req.hp) return json_({ ok: true });            // honeypot: pretend success
     switch (req.action) {
       case 'getStatus': res = getStatus_(req); break;
-      case 'checkEmail': res = checkEmail_(req); break;
       case 'submit':    res = submit_(req);    break;
       case 'saveDraft': res = saveDraft_(req); break;
       case 'getDraft':  res = getDraft_(req);  break;
@@ -107,17 +106,6 @@ function isRegistered_(email) {
 function notRegistered_() {
   return fail_('NOT_REGISTERED', 'We could not find this email address among the expressions of interest. Enter the address you used there, ' +
     'or fill in the expression of interest first.');
-}
-function checkEmail_(req) {
-  const form = formFor_(req.formId); if (!form) return fail_('BAD_REQUEST', 'Unknown form.');
-  const email = String(req.email || '').trim().toLowerCase();
-  if (!EMAIL_RE_.test(email)) return fail_('VALIDATION', 'Enter a valid email address.');
-  if (form.access !== 'panel') return { ok: true, registered: true };
-  // Limits probing whether a given person registered.
-  if (!rateLimit_('checkemail:' + email, 20, 3600) || !rateLimit_('checkemail:global', 500, 3600)) {
-    return fail_('RATE_LIMIT', 'Too many checks. Please try again later.');
-  }
-  return { ok: true, registered: isRegistered_(email) };
 }
 
 /** Visibility + validation (mirror of src/formEngine/validate.ts) --------------- */

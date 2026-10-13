@@ -45,7 +45,7 @@ export function FormRenderer({ form }: { form: FormDef }) {
   const errorRef = useRef<HTMLDivElement | null>(null);
 
   const formStatus = useFormStatus(form.id);
-  const registration = useRegistrationCheck(form, data.email);
+  const registration = useRegistrationCheck(data.email);
   useLocalDraftAutosave(form.id, form.version, data);
 
   // A draft saved under an earlier version is moved to the current one at once, so leaving before the next autosave loses nothing.
@@ -115,17 +115,13 @@ export function FormRenderer({ form }: { form: FormDef }) {
     <FieldRenderer key={field.id} field={field} data={data} setField={setField} error={errors[field.id]} />
   );
 
-  // Leaving the step that asks for the email checks it against the expressions of interest (panel forms only).
+  // Used to jump back to the email step if the server rejects the submission as unregistered.
   const emailStep = sections.findIndex((s) => s.fields.some((f) => f.type === "email"));
-  async function moveTo(target: number) {
-    if (emailStep >= 0 && step <= emailStep && target > emailStep && !(await registration.ensureRegistered())) return;
-    setStepIndex(target);
-  }
 
   function goNext() {
     const sectionErrors = validateSection(currentSection, data);
     setErrors(sectionErrors);
-    if (!hasErrors(sectionErrors) && !isLastStep) void moveTo(step + 1);
+    if (!hasErrors(sectionErrors) && !isLastStep) setStepIndex(step + 1);
   }
 
   function goBack() {
@@ -213,7 +209,7 @@ export function FormRenderer({ form }: { form: FormDef }) {
           current={step}
           onSelect={(i) => {
             setErrors({});
-            void moveTo(i);
+            setStepIndex(i);
           }}
         />
       )}
@@ -267,8 +263,8 @@ export function FormRenderer({ form }: { form: FormDef }) {
               {submitting ? "Sending..." : form.submitLabel}
             </button>
           ) : (
-            <button type="submit" className="button button--primary" disabled={registration.checking}>
-              {registration.checking ? "Checking..." : "Next"}
+            <button type="submit" className="button button--primary">
+              Next
             </button>
           )}
         </div>

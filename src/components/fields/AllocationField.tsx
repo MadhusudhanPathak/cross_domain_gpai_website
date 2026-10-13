@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { ALLOCATION_TOTAL, CONFIDENCE_MAX, CONFIDENCE_MIN, allocationIssues, allocationSum } from "../../formEngine/items";
 import type { AllocationValue, FieldOf } from "../../formEngine/types";
 import { FieldError, describedBy, errorIdFor, invalidAttr } from "./FieldShell";
@@ -40,36 +40,45 @@ export function AllocationField({ field, value, onChange, error }: Props) {
       <ItemText id={field.id} title={field.label} stem={field.stem} question={field.question} />
 
       <div className="alloc">
-        {field.codes.map((c) => {
+        {field.codes.map((c, i) => {
           const inputId = `${field.id}-${c.value}`;
           const descId = `${inputId}-desc`;
           return (
-            <div className="alloc__row" key={c.value}>
-              <div className="alloc__text">
-                <label htmlFor={inputId}>
-                  <span className="alloc__code">{c.code}</span> {c.label}
-                </label>
-                <span className="alloc__desc" id={descId}>
-                  {c.description}
-                </span>
+            <Fragment key={c.value}>
+              {i === 0 && <p className="alloc__group-heading">Everything is fine</p>}
+              {i === 1 && (
+                <>
+                  <hr className="alloc__divider" />
+                  <p className="alloc__group-heading">The items below need improvement</p>
+                </>
+              )}
+              <div className="alloc__row">
+                <div className="alloc__text">
+                  <label htmlFor={inputId}>
+                    <span className="alloc__code">{c.code}</span> {c.label}
+                  </label>
+                  <span className="alloc__desc" id={descId}>
+                    {c.description}
+                  </span>
+                </div>
+                <div className="count-input__box">
+                  <input
+                    id={inputId}
+                    className="alloc__input"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="off"
+                    value={value.points[c.value] ?? ""}
+                    disabled={value.ooc}
+                    onChange={(e) => onChange({ ...value, points: { ...value.points, [c.value]: e.target.value } })}
+                    onBlur={() => setTouched((t) => ({ ...t, points: true }))}
+                    aria-describedby={describedBy(descId, totalId)}
+                    aria-invalid={invalidAttr(pointsError)}
+                  />
+                  <span aria-hidden="true">%</span>
+                </div>
               </div>
-              <div className="count-input__box">
-                <input
-                  id={inputId}
-                  className="alloc__input"
-                  type="text"
-                  inputMode="numeric"
-                  autoComplete="off"
-                  value={value.points[c.value] ?? ""}
-                  disabled={value.ooc}
-                  onChange={(e) => onChange({ ...value, points: { ...value.points, [c.value]: e.target.value } })}
-                  onBlur={() => setTouched((t) => ({ ...t, points: true }))}
-                  aria-describedby={describedBy(descId, totalId)}
-                  aria-invalid={invalidAttr(pointsError)}
-                />
-                <span aria-hidden="true">%</span>
-              </div>
-            </div>
+            </Fragment>
           );
         })}
         <p className={`alloc__total${!value.ooc && !totalOk ? " alloc__total--error" : ""}`} id={totalId} aria-live="polite">

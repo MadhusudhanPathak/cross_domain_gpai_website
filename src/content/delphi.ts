@@ -265,6 +265,7 @@ export const glossaryLegalTerms: GlossaryEntry[] = [
 
 /** Constraint codes used in item 01 of each domain. Must match the `codes` of the allocation items in `round1.json` (checked by a test). */
 export const constraintCodes = [
+  { code: "Ø", label: "There is no limit to the verification", description: "The claim can be adequately checked and all aspects are good." },
   {
     code: "L",
     label: "Legal entitlement missing",
@@ -280,7 +281,6 @@ export const constraintCodes = [
   { code: "E", label: "Narrower evidence", description: "Even when well executed, the method establishes something narrower than, or different from, the claim." },
   { code: "N", label: "Under-specified criterion", description: "The standard the claim must meet (e.g. what counts as fair or appropriate) is not sufficiently specified or agreed." },
   { code: "O", label: "Operational capacity", description: "The bodies involved lack the resources, expertise or procedures to verify in practice." },
-  { code: "Ø", label: "Not materially limited", description: "The claim can be adequately verified today." },
 ];
 
 /**
