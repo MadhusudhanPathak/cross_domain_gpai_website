@@ -444,11 +444,11 @@ const FORMS = {
     "id": "round1",
     "version": "1.1.0",
     "title": "Expert elicitation on evidence and verification for general-purpose AI",
-    "intro": "Round 1 questionnaire: 40 items in four domain blocks. It takes a focused sittings of about 40–50 minutes in total, and you may pause at any time: your answers are kept in this browser, and \"Save and continue later\" lets you resume on another device. Best completed on a computer.",
+    "intro": "**Before you start:** Round 1 is for people who have filled in the expression of interest. Enter the same email address you used there; we check it before you continue.\n\nRound 1 questionnaire: 40 items in four domain blocks. It takes a focused sittings of about 40–50 minutes in total, and you may pause at any time: your answers are kept in this browser, and \"Save and continue later\" lets you resume on another device. Best completed on a computer.",
     "estimatedMinutes": 45,
     "submitLabel": "Send my Round 1 answers",
     "sheet": "Round1",
-    "access": "open",
+    "access": "panel",
     "doneMessage": "Thank you for completing Round 1. Round 2 opens once Round 1 has closed; we will email you when it does. In Round 2 you will see both panels' anonymised Round 1 results and can revise or confirm your answers.",
     "stepNav": true,
     "resetOnUpgrade": [
