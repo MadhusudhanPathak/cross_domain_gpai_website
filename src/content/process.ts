@@ -13,7 +13,7 @@ export const stages: Stage[] = [
   {
     id: "round1",
     label: "Round 1: independent ratings",
-    window: "01 - 13 Oct",
+    window: "17 Oct - 2 Nov",
     minutes: 45,
     durationLabel: "~45 min",
     mode: "Asynchronous online form, own time",
@@ -22,34 +22,34 @@ export const stages: Stage[] = [
   {
     id: "summary",
     label: "Summary prepared",
-    window: "13 - 15 Oct",
+    window: "3 Nov",
     minutes: 0,
     durationLabel: "none",
     mode: "Prepared by the research team",
-    description: "The team anonymises and summarises Round 1 responses. You do not need to do anything at this stage.",
+    description: "The team anonymises and summarises Round 1 responses and sends it to every Round 1 panellist. You do not need to do anything at this stage.",
   },
   {
     id: "round2",
     label: "Round 2: review and revise",
-    window: "15 - 20 Oct",
+    window: "4 - 13 Nov",
     minutes: 60,
     durationLabel: "~1 hour",
     mode: "Asynchronous online form, own time",
     description: "You review the anonymised Round 1 summary, then revise your own answers in light of it.",
   },
   {
-    id: "call",
-    label: "Short call: reasons and overview",
-    window: "20 - 27 Oct",
+    id: "interview",
+    label: "Interview: reasons and overview",
+    window: "14 - 24 Nov",
     minutes: 15,
-    durationLabel: "15 min",
+    durationLabel: "~15 min",
     mode: "Live call, recorded and transcribed",
-    description: "The only synchronous part of the process: a 15-minute call to discuss your reasons for any changes and to review the panel's overall responses. The call is recorded and transcribed for research use only.",
+    description: "The only synchronous part of the process: a short interview to discuss your reasons for any changes and to review the panel's overall responses. Book a time using the scheduling link in the expression-of-interest form. The interview is recorded and transcribed for research use only.",
   },
 ];
 
 export const totalMinutesLabel =
-  "About 2 hours in total, spread over three weeks. Only the final 15-minute call needs a fixed time; everything else is asynchronous but kept within its window.";
+  "About 2 hours in total, spread over about five and a half weeks. Only the final interview needs a fixed time; everything else is asynchronous but kept within its window.";
 
 export const processNote =
   "Round 2 opens only after every panellist has finished Round 1. Dates may shift by a day or two; the team will give notice in advance.";

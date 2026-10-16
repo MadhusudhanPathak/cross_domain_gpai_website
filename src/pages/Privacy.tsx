@@ -14,8 +14,8 @@ export function Privacy() {
 
       <h2>What we collect</h2>
       <p>
-        Form answers (including your name, email, role, expertise and availability), your consent record, and, for
-        panellists who take part in the final stage, the recording and transcript of the 15-minute call.
+        Form answers (including your name, email, role and expertise), your consent record, and, for
+        panellists who take part in the final stage, the recording and transcript of the interview.
       </p>
 
       <h2>Why we collect it</h2>
@@ -33,8 +33,9 @@ export function Privacy() {
       <h2>Where it is stored</h2>
       <p>
         Responses are stored in a Google Sheet held in the research team's Google account. This website is static and
-        stores nothing on a server; the only data sent off your device goes to that Google Sheet. If the call is
-        transcribed with a third-party tool, that tool is {site.transcriptionTool}.
+        stores nothing on a server; the only data sent off your device goes to that Google Sheet. If the interview is
+        transcribed with a third-party tool, that tool is {site.transcriptionTool}. Booking a time for the interview
+        uses a third-party scheduling tool, {site.schedulingTool}, linked from the expression-of-interest form.
       </p>
 
       <h2>Retention</h2>

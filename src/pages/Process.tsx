@@ -12,8 +12,8 @@ export function Process() {
         <h3>What if I am busy some days?</h3>
         <p>
           Round 1 and Round 2 are asynchronous: you can complete them at any point within their windows, in your own time.
-          The only fixed-time commitment is the 15-minute call near the end, and the availability grid in the interest
-          form is only there to help us find a slot for that one call.
+          The only fixed-time commitment is the interview near the end; use the scheduling link in the expression-of-interest
+          form to book a time for it.
         </p>
       </div>
 
@@ -28,7 +28,7 @@ export function Process() {
       <div className="faq-item">
         <h3>What is recorded?</h3>
         <p>
-          The 15-minute call at the end of the process is recorded and transcribed. The recording and transcript are used
+          The interview at the end of the process is recorded and transcribed. The recording and transcript are used
           only for this research.
         </p>
       </div>

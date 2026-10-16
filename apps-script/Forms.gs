@@ -4,7 +4,7 @@ const FORMS = {
     "id": "interest",
     "version": "1.0.0",
     "title": "Join the expert panel",
-    "intro": "We are researching how well the techniques available today can substantiate safety and compliance claims about general-purpose AI models, and how much weight expert judgement gives them. We are building an open panel of experts, technical and legal/governance, for a two-round structured expert judgement exercise (Delphi). There is no fixed cap on how many experts we take on in either track.\n\nThe study covers four domains:\n\n**D1 Model opacity:** inspecting and explaining why a model produced an output (interpretability, explainability).\n\n**D2 Data integrity:** bias in training data, and degradation from training on synthetic model outputs (model collapse).\n\n**D3 Normative competence:** machine ethics, theory of mind, AI personas and companions, sycophancy.\n\n**D4 Adversarial robustness:** jailbreaking, prompt injection, data poisoning, AI security.\n\nThis form records your interest, expertise and availability. **Filling it in does not commit you to take part.** Almost all of the process is asynchronous and self-paced; the only fixed-time commitment is a single 15-minute call near the end, between 20 and 27 October. The full process and time commitment (about 2 hours 15 minutes in total, between 1 and 27 October) are explained in step 3.",
+    "intro": "We are researching how well the techniques available today can substantiate safety and compliance claims about general-purpose AI models, and how much weight expert judgement gives them. We are building an open panel of experts, technical and legal/governance, for a two-round structured expert judgement exercise (Delphi). There is no fixed cap on how many experts we take on in either track.\n\nThe study covers four domains:\n\n**D1 Model opacity:** inspecting and explaining why a model produced an output (interpretability, explainability).\n\n**D2 Data integrity:** bias in training data, and degradation from training on synthetic model outputs (model collapse).\n\n**D3 Normative competence:** machine ethics, theory of mind, AI personas and companions, sycophancy.\n\n**D4 Adversarial robustness:** jailbreaking, prompt injection, data poisoning, AI security.\n\nThis form records your interest, expertise and availability. **Filling it in does not commit you to take part.** Almost all of the process is asynchronous and self-paced; the only fixed-time commitment is a short interview near the end, between 14 and 24 November. The full process and time commitment (about 2 hours in total, between 17 October and 24 November) are explained in step 3.",
     "estimatedMinutes": 5,
     "submitLabel": "Send my responses",
     "sheet": "Interest",
@@ -190,7 +190,7 @@ const FORMS = {
       {
         "id": "process",
         "title": "The process and your availability",
-        "description": "Please read how the study works before you answer. Almost everything below is asynchronous and self-paced, within fixed windows. The only fixed-time commitment is a single 15-minute call near the end (20-27 October) — that is all the availability grid below is for.",
+        "description": "Please read how the study works before you answer. Almost everything below is asynchronous and self-paced, within fixed windows. The only fixed-time commitment is a short interview near the end (14-24 November) — book a time using the link below.",
         "fields": [
           {
             "id": "process_info",
@@ -219,137 +219,21 @@ const FORMS = {
             ]
           },
           {
-            "id": "city",
-            "type": "text",
-            "label": "What city will you be in between 20 and 27 October?",
-            "help": "This is just so we can schedule your 15-minute call at a reasonable time for you.",
-            "required": true,
-            "maxLength": 120,
+            "id": "availability_info",
+            "type": "info",
+            "label": "Your interview availability",
+            "variant": "callout",
+            "text": "The only fixed-time commitment in this process is a short interview between 14 and 24 November. **It is important that you fill in your availability so we can schedule your interview.** Please tell us your availability for it using this link: [Book your interview slot](https://timeful.app/e/egGRfz). This is not a commitment and you can always change it later.",
             "showIf": {
               "field": "commitment",
               "notEquals": "no"
             }
           },
           {
-            "id": "availability",
-            "type": "availability",
-            "label": "When could you join a 15-minute call between 20 and 27 October?",
+            "id": "availability_confirmed",
+            "type": "checkbox",
+            "label": "I have filled in my availability at timeful.app/e/egGRfz",
             "required": true,
-            "minSlots": 5,
-            "help": "This is just to get a general idea of your availability for a single 15-minute call near the end of the process — it is not a commitment and can always be changed later. Tick every half-hour slot, in your local time, that could work. Select at least 5 slots in total; you do not need to cover every day.",
-            "dates": {
-              "from": "2026-10-20",
-              "to": "2026-10-27"
-            },
-            "slots": [
-              {
-                "value": "08:00",
-                "label": "08:00"
-              },
-              {
-                "value": "08:30",
-                "label": "08:30"
-              },
-              {
-                "value": "09:00",
-                "label": "09:00"
-              },
-              {
-                "value": "09:30",
-                "label": "09:30"
-              },
-              {
-                "value": "10:00",
-                "label": "10:00"
-              },
-              {
-                "value": "10:30",
-                "label": "10:30"
-              },
-              {
-                "value": "11:00",
-                "label": "11:00"
-              },
-              {
-                "value": "11:30",
-                "label": "11:30"
-              },
-              {
-                "value": "12:00",
-                "label": "12:00"
-              },
-              {
-                "value": "12:30",
-                "label": "12:30"
-              },
-              {
-                "value": "13:00",
-                "label": "13:00"
-              },
-              {
-                "value": "13:30",
-                "label": "13:30"
-              },
-              {
-                "value": "14:00",
-                "label": "14:00"
-              },
-              {
-                "value": "14:30",
-                "label": "14:30"
-              },
-              {
-                "value": "15:00",
-                "label": "15:00"
-              },
-              {
-                "value": "15:30",
-                "label": "15:30"
-              },
-              {
-                "value": "16:00",
-                "label": "16:00"
-              },
-              {
-                "value": "16:30",
-                "label": "16:30"
-              },
-              {
-                "value": "17:00",
-                "label": "17:00"
-              },
-              {
-                "value": "17:30",
-                "label": "17:30"
-              },
-              {
-                "value": "18:00",
-                "label": "18:00"
-              },
-              {
-                "value": "18:30",
-                "label": "18:30"
-              },
-              {
-                "value": "19:00",
-                "label": "19:00"
-              },
-              {
-                "value": "19:30",
-                "label": "19:30"
-              }
-            ],
-            "showIf": {
-              "field": "commitment",
-              "notEquals": "no"
-            }
-          },
-          {
-            "id": "availability_notes",
-            "type": "textarea",
-            "label": "Anything else we should know about scheduling your call? (optional)",
-            "help": "For example travel, conferences, or days you are completely unavailable between 20 and 27 October.",
-            "maxLength": 1000,
             "showIf": {
               "field": "commitment",
               "notEquals": "no"
@@ -385,7 +269,7 @@ const FORMS = {
               },
               {
                 "value": "consent_recording",
-                "label": "I agree that the 15-minute call will be recorded and transcribed, and that the recording and transcript will be used only for this research."
+                "label": "I agree that the interview will be recorded and transcribed, and that the recording and transcript will be used only for this research."
               },
               {
                 "value": "consent_storage",
